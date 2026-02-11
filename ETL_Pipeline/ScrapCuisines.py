@@ -1,11 +1,12 @@
 from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+import json
 
 async def MainScrapCuisines():
     ExtractionSchema = {
         'name': 'Cuisines',
         'baseSelector': 'li.comp.mntl-link-list__item',
         'fields': [
-            {'name': 'Title', 'selector': 'a', 'type': 'text'},
+            {'name': 'Cuisine', 'selector': 'a', 'type': 'text'},
             {'name': 'Link', 'selector': 'a', 'type': 'attribute', 'attribute': 'href'},
         ]
     }
@@ -19,4 +20,5 @@ async def MainScrapCuisines():
             url = "https://www.allrecipes.com/cuisine-a-z-6740455",
             config = CrawlerConfig,
         )
-        print(result.extracted_content)
+    
+    return json.loads(result.extracted_content)
