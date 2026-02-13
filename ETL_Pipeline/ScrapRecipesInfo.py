@@ -1,4 +1,5 @@
 from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+import json
 
 async def MainScrapRecipeInformation(RecipeLink: str):
     SessionID = 'Session_RecipeInformation'
@@ -16,7 +17,7 @@ async def MainScrapRecipeInformation(RecipeLink: str):
         'name': 'Recipe Information about Ingredients and Quantities',
         'baseSelector': 'ul.mm-recipes-structured-ingredients__list',
         'fields': [
-            {'name': 'Ingredients', 'selector': 'li', 'type': 'list', 'fields':[{'name': 'ingredient', 'type': 'text'}]},
+            {'name': 'Ingredients', 'selector': 'li', 'type': 'list', 'fields':[{'name': 'ingredient','type': 'text'},]},
         ]
     }
 
@@ -34,8 +35,8 @@ async def MainScrapRecipeInformation(RecipeLink: str):
         'fields': [
             {'name': 'Calories', 'selector': 'tr.mm-recipes-nutrition-facts-label__calories span:nth-of-type(2)', 'type': 'text'},
             {'name': 'Nutritional Facts', 'selector': 'tbody tr:nth-child(n+2)', 'type': 'nested_list', 'fields':[
-                {'name': 'nutrition label', 'selector': 'td span', 'type': 'text'},
-                {'name': 'nutrition value', 'selector': 'td', 'type': 'regex', 'pattern': r'[A-Za-z ]+\s*([\d.]+\w+)'},
+                {'name': 'label', 'selector': 'td span', 'type': 'text'},
+                {'name': 'value', 'selector': 'td', 'type': 'regex', 'pattern': r'[A-Za-z ]+\s*([\d.]+\w+)'},
             ]}
         ]
     }
@@ -51,25 +52,29 @@ async def MainScrapRecipeInformation(RecipeLink: str):
             url = RecipeLink,
             config = CrawlerConfig,
         )
-        print(result_TimesServings.extracted_content)
 
         CrawlerConfig.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_Ingredients)
         result_Ingredients: CrawlResult  = await crawler.arun(
             url = RecipeLink,
             config = CrawlerConfig,
         )
-        print(result_Ingredients.extracted_content)
 
         CrawlerConfig.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_Directions)
         result_Directions: CrawlResult  = await crawler.arun(
             url = RecipeLink,
             config = CrawlerConfig,
         )
-        print(result_Directions.extracted_content)
 
         CrawlerConfig.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_NutritionalFacts)
         result_NutritionalFacts: CrawlResult  = await crawler.arun(
             url = RecipeLink,
             config = CrawlerConfig,
         )
-        print(result_NutritionalFacts.extracted_content)
+
+    Results = [
+        result_TimesServings, 
+        result_Ingredients, 
+        result_Directions,
+        result_NutritionalFacts,
+    ]
+    return [json.loads(result.extracted_content) for result in Results]
