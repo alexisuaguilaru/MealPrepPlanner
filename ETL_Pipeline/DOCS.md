@@ -1,28 +1,34 @@
 # ETL Pipelines <!-- omit in toc -->
 
+## Table of Contents <!-- omit in toc -->
 - [Data Sources](#data-sources)
-  - [Datos para SQL Database](#datos-para-sql-database)
-  - [Documentos para (Graph)RAG](#documentos-para-graphrag)
+  - [Datos para SQL Database e Image Database](#datos-para-sql-database-e-image-database)
+  - [Documentos para (Graph)RAG y Vectorial Database](#documentos-para-graphrag-y-vectorial-database)
 - [Metadatos y Esquemas](#metadatos-y-esquemas)
   - [Recetas](#recetas)
-  - [Textos Médicos](#textos-médicos)
+  - [Imágenes](#imágenes)
+  - [Textos Médicos y Nutricionales](#textos-médicos-y-nutricionales)
 - [Pipelines](#pipelines)
 
 ## Data Sources
 Fuentes de datos para cada tipo de base de datos que se van a poblar a lo largo del proyecto. Se tiene contemplado lo siguiente:
-* Una base de datos SQL para almacenar las diferentes recetas y sus datos relacionados (instrucciones, ingredientes, valores nutricionales) con el fin de que sea consultada por medio de la IA usando MCP
+* Una base de datos SQL para almacenar las diferentes recetas y sus datos relacionados (instrucciones, ingredientes, valores nutricionales) con el fin de que sea consultada por medio de la IA usando MCP. Por los objetivos adicionales del proyecto, es necesario consolidar entidades al momento de relacionar los ingredientes de las recetas con sus valores nutricionales.
 * Una base de datos vectorial para almacenar los documentos e imágenes de las recetas con el fin de que la IA pueda entender y comprender el perfil de usuario al quien le está haciendo su meal prep. Las imágenes servirán para ilustrar al usuario como las comidas se ven
 
-### Datos para SQL Database
+### Datos para SQL Database e Image Database
 De las siguientes fuentes se van a extraer: Datos estadísticos (valores nutricionales), Textos (instrucciones de preparación e ingredientes), Imágenes (cómo se ven las comidas)
-* [allrecipes](https://www.allrecipes.com/)
-    - Recetas de diferentes cocinas y estilos que no cuentan con un respaldo de expertos para ser consumidas o preparadas
-    - Extraer todos las recetas y su información relevante de ingredientes, para hacerlas y sus aportes nutricionales
+* [allrecipes: Mexican Cuisine](https://www.allrecipes.com/recipes/728/world-cuisine/latin-american/mexican/)
+    - Recetas con inspiración y "toques" mexicanos
+    - Extraer todos las recetas y su información relevante de ingredientes, instrucciones, tiempo de preparación y sus aportes nutricionales
+* [kiwilimon: Recetas](https://www.kiwilimon.com/recetas)
+    - Recetas tradicionales y de inspiración regionales
+    - Extraer recetas de ciertas categorías y su información relevante de ingredientes, instrucciones y tiempo de preparación
+    - No cuentan con aportes nutricionales, por lo que es necesario generar sus aportes nutricionales
 * [EatRight: Recipes](https://www.eatright.org/recipes)
-    - Recetas con orientación nutricional y realizadas por expertos
+    - Recetas internacionales con orientación nutricional y realizadas por expertos
     - Extraer todas las recetas y su información relevantes de ingredientes, para hacerlas y sus aportes nutricionales
 
-### Documentos para (Graph)RAG
+### Documentos para (Graph)RAG y Vectorial Database
 De las siguientes fuentes se van a extraer: Textos y Documentos (relacionados sobre salud, nutrición, dietas y wellness)
 * [WHO Fact Sheet](https://www.who.int/news-room/fact-sheets)
     - Extraer textos relevantes sobre alimentación, dietas, salud alimentaria y manejo de alimentos
@@ -36,12 +42,96 @@ De las siguientes fuentes se van a extraer: Textos y Documentos (relacionados so
     * [Guías Alimentarias Saludables y Sostenibles para la Población Mexicana](https://www.gob.mx/cms/uploads/attachment/file/1029510/Guias_Alimentarias_Mexico_2025.pdf)
 * [EatRight: Health](https://www.eatright.org/health)
     - Extraer textos relacionados al cuidado personal (wellness) y sobre nutrición en las condiciones de salud
+* [Larousse Cocina: Técnicas](https://laroussecocina.mx/tecnicas/)
+    - Extraer información sobre algunas técnicas y formas de preparación
 
 ## Metadatos y Esquemas
-Para cada objeto abstracto/relevante para las bases de datos, se definen sus metadatos:
+Para cada objeto abstracto/relevante para las bases de datos, se definen sus esquemas de metadatos:
 
 ### Recetas
-### Textos Médicos
+* Formato de Archivo:
+    - `.sql` (Debido a que estos valores están en una base de datos SQL)
+* Atributos:
+    - Total Tiempo de Preparación
+      - Valores enteros positivos 
+      - Tiempo requerido para elaborar el platillo, este tiempo incluye los tiempos como de cocción o de horneado
+    - Ingredientes
+      - Dos listas de valores que representan los nombres y cantidades de ingredientes
+      - Nombre de Ingredientes
+        - Lista de *strings* 
+        - Lista que contiene los nombres de cada ingrediente necesario para preparar la receta
+      - Cantidad de Ingredientes
+        - Lista de números flotantes
+        - Lista que contiene la cantidad de cada ingrediente para preparar la receta
+    - Instrucciones
+      - Lista de *strings*
+      - Pasos detallados para elaborar la receta 
+    - Aportes Nutricionales
+      - Dos listas de valores que representan los nombres de los macronutrientes y micronutrientes de una receta, y otra lista que contienen los valores de cada nutriente
+      - Nombre de Nutrientes
+        - Lista de *String*
+        - Nombre representativo de los macronutrientes y micronutrientes presentes en una receta
+      - Cantidad de Nutrientes
+        - Lista de números flotantes
+        - Cantidad en cada de uno de los nutrientes presente en la receta
+    - Origen
+      - *String*
+      - Fuente URL de la que proviene la receta
+    - Imágenes Ilustrativas
+      - *String*
+      - Referencia URI a la ubicación en la Image DB de la imagen de cómo se ve la receta servida o terminada de preparar
+* Número de Recetas:
+    - Número de recetas presente en la DB
+* Fecha de Extracción:
+    - Fecha en la que se recuperó la receta
+* Versión:
+    - Número/representación de la versión de la DB
+
+### Imágenes
+* Formato de Imagen:
+    - Formato `.jpg`
+* Atributos:
+    - Identificador de Receta
+      - *String*
+      - ID de la receta en la SQL DB que se ilustra en la imagen
+    - Contenido
+      - Mapa de bits (colores)
+      - Representación de la imagen en sí como bits
+    - Origen
+      - *String*
+      - Fuente URL de la que proviene la imagen
+* Número de Imágenes:
+    - Número de imágenes en la DB
+* Fecha de Extracción:
+    - Fecha en la que se descargó la imagen
+* Versión:
+    - Número/representación de la versión de la DB
+
+### Textos Médicos y Nutricionales
+* Formato de Archivo:
+    - `embeddings` (vector de texto embebido, debido a que estos documentos están en una base de datos vectorial)
+* Atributos:
+    - Titulo del Texto
+      - *String*
+      - Título, nombre o siglas que representan el documento o texto
+    - Contenido
+      - *String*
+      - Contenido en texto plano (`.txt` o `.pdf`) o estructurado (`.md`) sobre la información del documento o texto
+      - Este atributo solo está presente durante la Extracción, luego se va a embeber en un vector para el RAG
+    - Fecha de Publicación
+      - *String*
+      - Fecha en formato *YYYY/MM/DD* en la que se publicó el texto
+    - Origen
+      - *String*
+      - Fuente URL de la que proviene el texto
+    - Autor/Origen/Institución Emisora:
+      - Ente encargo de la publicación o emisión del documento en internet
+* Número de Documentos:
+    - Número de documentos presente en la DB
+* Fecha de Extracción:
+    - Fecha en la que se obtuvo el documento
+* Versión:
+    - Número/representación de la versión de la DB
 
 ## Pipelines
 * [*E*] De la página [allrecipes](www.allrecipes.com), extraje las recetas de las diferentes cocinas con las que contaba
