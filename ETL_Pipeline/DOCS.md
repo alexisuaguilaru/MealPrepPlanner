@@ -8,6 +8,9 @@
   - [Recetas](#recetas)
   - [Imágenes](#imágenes)
   - [Textos Médicos y Nutricionales](#textos-médicos-y-nutricionales)
+- [Almacenamiento y Organización de los Datos](#almacenamiento-y-organización-de-los-datos)
+  - [Almacenamiento](#almacenamiento)
+  - [Organización](#organización)
 - [Pipelines](#pipelines)
 
 ## Data Sources
@@ -132,6 +135,22 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
     - Fecha en la que se obtuvo el documento
 * Versión:
     - Número/representación de la versión de la DB
+
+## Almacenamiento y Organización de los Datos
+De los objetos relevantes, cada uno pertenece a un tipo de database diferente, esto debido a la naturaleza de cómo se tienen que almacenar para mejorar su disposición para el sistema de IA. La mayoría de los datos y objetos extraídos no son visibles al usuario final, es decir, el usuario solo podrá ver ciertas recetas (las propuestas por la IA y modificadas por el mismo) y el registro de su ingesta de macronutrientes y micronutrientes a lo largo del tiempo.
+
+### Almacenamiento
+Los datos que son extraídos y transformados serán almacenados en tres tipos de de bases de datos, y adicionalmente una base de datos para hacer el registro de los nutrientes consumidos por los usuarios:
+* SQL DB en Postgres para almacenar los datos de las recetas. Tanto en development y production se emplea la ejecución local de PostgresSQL
+* Almacenamiento basado en Objetos (Object-based Storage) para almacenar las imágenes de las recetas. En development se emplea el almacenamiento local y en production S3 de AWS
+* Vector DB para almacenar los embeddings de los documentos y textos extraídos. Tanto en development y production se emplea la ejecución local de Qdrant (se considera usar S3 de AWS para almacenar los embeddings en production)
+* SQL DB en Postgres para almacenar los datos generados por los usuarios (preferencia de recetas, nutrientes consumidos) incluyendo la información de su perfile (nombre de usuario, contraseña, nacionalidad, datos como peso, estatura, edad y genero)
+
+### Organización
+Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar los nutrientes que ha consumido, y que estos paneles se encuentren en tabs en un menú lateral ocultable:
+* Para la interacción con la IA y la captura de los primeros datos fisiológicos-médicos de un paciente, se tiene contemplado el crear un chat estilo Gemini, ChatGPT o DeepSeek para permitir una transición suave para el uso de nuestra herramienta 
+* Para presentarle al usuario las propuestas de recetas, se tiene planeado hacer un mini calendario donde cada entrada sea una receta correspondiente a un día y hora. Con esta disposición podrá ver qué comidas prefiere comer o no, para así mismo solicitar a la IA por medio de un chat su respectiva modificación o cambio. Además, al momento de que el usuario le hace click a una de las recetas pueda ver su información nutricional, ingredientes y una imagen ilustrativa de la receta
+* Para que el usuario pueda visualizar el registro de nutrientes que ha consumido a lo largo del tiempo y tener una visión general de su salud nutricional, se plantea hacer un dashboard interactivo con plots intuitivos
 
 ## Pipelines
 * [*E*] De la página [allrecipes](www.allrecipes.com), extraje las recetas de las diferentes cocinas con las que contaba
