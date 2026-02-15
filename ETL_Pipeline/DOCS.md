@@ -55,6 +55,9 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
 * Formato de Archivo:
     - `.sql` (Debido a que estos valores están en una base de datos SQL)
 * Atributos:
+    - Nombre de la Receta
+      - *String*
+      - Nombre completo o referente a la receta
     - Total Tiempo de Preparación
       - Valores enteros positivos 
       - Tiempo requerido para elaborar el platillo, este tiempo incluye los tiempos como de cocción o de horneado
@@ -142,9 +145,49 @@ De los objetos relevantes, cada uno pertenece a un tipo de database diferente, e
 ### Almacenamiento
 Los datos que son extraídos y transformados serán almacenados en tres tipos de de bases de datos, y adicionalmente una base de datos para hacer el registro de los nutrientes consumidos por los usuarios:
 * SQL DB en Postgres para almacenar los datos de las recetas. Tanto en development y production se emplea la ejecución local de PostgresSQL
+```mermaid
+erDiagram
+    direction LR;
+    NUTRIENTS {
+        text Name
+    }
+    IMAGES {
+        text URI
+        text Source
+    }
+    RECIPES {
+        text Name
+        int TotalTime
+        text Directions
+        int Calories
+        int Proteins
+        int Fats
+        text Source
+    }
+
+    RECIPES }|--|{ NUTRIENTS : Contains
+    RECIPES ||--o{ IMAGES : Looks
+```
 * Almacenamiento basado en Objetos (Object-based Storage) para almacenar las imágenes de las recetas. En development se emplea el almacenamiento local y en production S3 de AWS
 * Vector DB para almacenar los embeddings de los documentos y textos extraídos. Tanto en development y production se emplea la ejecución local de Qdrant (se considera usar S3 de AWS para almacenar los embeddings en production)
-* SQL DB en Postgres para almacenar los datos generados por los usuarios (preferencia de recetas, nutrientes consumidos) incluyendo la información de su perfile (nombre de usuario, contraseña, nacionalidad, datos como peso, estatura, edad y genero)
+* SQL DB en Postgres para almacenar los datos generados por los usuarios (preferencia de recetas, nutrientes consumidos) incluyendo la información de su perfile (nombre de usuario, nacionalidad, datos como peso, estatura, edad y genero). Tanto en development y production se emplea la ejecución local de PostgresSQL
+```mermaid
+erDiagram
+    direction LR;
+    USERS {
+        char Username
+        text Nationality
+        int Weight
+        int Height
+        int Age
+        bool Gender
+    }
+    NUTRIENTS {
+        text Name
+    }
+
+    USERS }o--|{ NUTRIENTS : Consumes
+```
 
 ### Organización
 Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar los nutrientes que ha consumido, y que estos paneles se encuentren en tabs en un menú lateral ocultable:
