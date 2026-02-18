@@ -20,5 +20,6 @@ Crear un ChatBot a modo de asistente personal capaz de comprender y analizar el 
 * Crear conexión del modelo hacia la SQL DB por medio de MCP para obtener recetas específicas en base a una criteria
 * Crear interfaz para el chat para la interacción usuario-IA
 * Crear dashboards para hacer el tracking de las comidas y nutrientes consumidos por el usuario (para hacer análisis y recomendaciones más relevantes)
+* Crear un buscador de recetas (recetarios) con las recetas extraídas 
 
 ## [ETL Pipelines](./ETL_Pipeline/DOCS.md)
