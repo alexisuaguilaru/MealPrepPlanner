@@ -1,3 +1,1 @@
-from .ScrapCuisines import MainScrapCuisines
-from .ScrapRecipes import MainScrapRecipesFromCuisine
-from .ScrapRecipesInfo import MainScrapRecipeInformation
+from .Recipes import MainAllrecipes
