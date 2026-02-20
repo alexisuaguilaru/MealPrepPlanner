@@ -2,7 +2,7 @@
 
 ## Table of Contents <!-- omit in toc -->
 - [Data Sources](#data-sources)
-  - [Datos para SQL Database e Image Database](#datos-para-sql-database-e-image-database)
+  - [Datos para SQL Database e Image Storage](#datos-para-sql-database-e-image-storage)
   - [Documentos para (Graph)RAG y Vectorial Database](#documentos-para-graphrag-y-vectorial-database)
 - [Metadatos y Esquemas](#metadatos-y-esquemas)
   - [Recetas](#recetas)
@@ -16,11 +16,12 @@
 
 ## Data Sources
 Fuentes de datos para cada tipo de base de datos que se van a poblar a lo largo del proyecto. Se tiene contemplado lo siguiente:
-* Una base de datos SQL para almacenar las diferentes recetas y sus datos relacionados (instrucciones, ingredientes, valores nutricionales) con el fin de que sea consultada por medio de la IA usando MCP y para desplegar las recetas en un buscador. Por los objetivos adicionales del proyecto, es necesario consolidar entidades al momento de relacionar los ingredientes de las recetas con sus valores nutricionales.
-* Una base de datos vectorial para almacenar los documentos e imágenes de las recetas con el fin de que la IA pueda entender y comprender el perfil de usuario al quien le está haciendo su meal prep. Las imágenes servirán para ilustrar al usuario como las comidas se ven
+* Una base de datos SQL para almacenar las diferentes recetas y sus datos relacionados (instrucciones, ingredientes, valores nutricionales, precio) con el fin de que sea consultada por medio de la IA usando MCP y para desplegar las recetas en un buscador. Por los objetivos adicionales del proyecto, es necesario consolidar entidades al momento de relacionar los ingredientes de las recetas con sus valores nutricionales.
+* Un almacenamiento basado en objetos para preservar las imágenes ilustrativas de las recetas extraídas.
+* Una base de datos vectorial para almacenar los documentos de las recetas con el fin de que el modelo de IA pueda entender y comprender qué recetas son más convenientes recomendar para crear el menú semanal
 
-### Datos para SQL Database e Image Database
-De las siguientes fuentes se van a extraer: Datos estadísticos (valores nutricionales), Textos (instrucciones de preparación e ingredientes), Imágenes (cómo se ven las comidas)
+### Datos para SQL Database e Image Storage
+De las siguientes fuentes se van a extraer: Datos estadísticos (valores nutricionales, precios), Textos (instrucciones de preparación, ingredientes), Imágenes (cómo se ven las recetas)
 * [Allrecipes: Mexican Cuisine](https://www.allrecipes.com/recipes/728/world-cuisine/latin-american/mexican/)
     - Recetas con inspiración y "toques" mexicanos
     - Extraer todos las recetas y su información relevante de ingredientes, instrucciones, tiempo de preparación y sus aportes nutricionales
@@ -37,6 +38,12 @@ De las siguientes fuentes se van a extraer: Datos estadísticos (valores nutrici
 * [INSP: Base de Alimentos de México](https://insp.mx/informacion-relevante/bam-bienvenida)
     - Base de datos con la composición y aportes nutricionales de algunos alimentos e ingredientes comunes de la cocina mexicana
     - Procesar y limpiar las entradas de los alimentos e ingredientes
+* [PROFECO: Quién es Quién en los Precios](https://qqp.profeco.gob.mx/)
+    - Repositorio de precios de productos e ingredientes ofertados en supermercados
+    - Extraer el precio de los ingredientes de interés
+* [Sistema Nacional de Información e Integración de Mercados (SNIIM)](https://www.economia-sniim.gob.mx/)
+    - Repositorio de precios de productos e ingredientes ofertados en mercados y centrales de abastos
+    - Extraer el precio de ingredientes frescos de interés
 
 ### Documentos para (Graph)RAG y Vectorial Database
 De las siguientes fuentes se van a extraer: Textos y Documentos (relacionados sobre salud, nutrición, dietas y wellness)
@@ -54,6 +61,10 @@ De las siguientes fuentes se van a extraer: Textos y Documentos (relacionados so
     - Extraer textos relacionados al cuidado personal (wellness) y sobre nutrición en las condiciones de salud
 * [Larousse Cocina: Técnicas](https://laroussecocina.mx/tecnicas/)
     - Extraer información sobre algunas técnicas y formas de preparación
+* [SEP](https://www.gob.mx/sep):
+    - Extraer textos relevantes sobre cómo es la alimentación ideal en las escuelas
+    * [Recomendaciones para una Alimentación Saludable](https://educacionbasica.sep.gob.mx/multimedia/RSC/BASICA/Documento/201611/201611-3-RSC-l100yBJI2X-alimentacion_saludable.pdf)
+    * [Servicio de Alimentación: Guía 2025](https://laescuelaesnuestra.sep.gob.mx/storage/recursos/material_consulta/GUIAS_2025/qPdyVcOLpc-20250127_GUIA_ALIMENTACION_V8.pdf)
 
 ## Metadatos y Esquemas
 Para cada objeto abstracto/relevante para las bases de datos, se definen sus esquemas de metadatos:
@@ -68,24 +79,32 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
     - Tiempo Total de Preparación
       - Valores enteros positivos 
       - Tiempo en minutos requerido para elaborar el platillo, este tiempo incluye los tiempos como de cocción o de horneado
-    - Nombre de Ingredientes
-      - Lista de *strings* 
-      - Lista que contiene los nombres de cada ingrediente necesario para preparar la receta
-    - Cantidad de Ingredientes
-      - Lista de números flotantes
-      - Lista que contiene la cantidad de cada ingrediente para preparar la receta
+    - Porciones
+      - Valores enteros positivos
+      - Número de porciones o raciones por preparación
+    - Ingredientes
+      - Nombre de Ingredientes
+        - Lista de *strings* 
+        - Lista que contiene los nombres de cada ingrediente necesario para preparar la receta
+      - Cantidad de Ingredientes
+        - Lista de números flotantes
+        - Lista que contiene la cantidad de cada ingrediente para preparar la receta
     - Instrucciones
       - Lista de *strings*
       - Pasos detallados para elaborar la receta 
     - Calorías Totales
       - Número flotante
       - El total de aporte energético de una porción de la receta 
-    - Nombre de Nutrientes
-      - Lista de *String*
-      - Nombre representativo de los macronutrientes y micronutrientes presentes en una receta
-    - Cantidad de Nutrientes
-      - Lista de números flotantes
-      - Cantidad de cada de uno de los nutrientes presente en la receta
+    - Nutrientes
+      - Nombre de Nutrientes
+        - Lista de *String*
+        - Nombre representativo de los macronutrientes y micronutrientes presentes en una receta
+      - Cantidad de Nutrientes
+        - Lista de números flotantes
+        - Cantidad de cada de uno de los nutrientes presente en la receta
+    - Precio por Porción
+      - Valores flotantes positivos
+      - Precio (costo) estimado de cada porción
     - Origen
       - *String*
       - Fuente URL de la que proviene la receta
@@ -107,12 +126,19 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
     - Calorías
       - Número flotante
       - Aporte energético en 100gr del ingrediente
-    - Nombre de Nutrientes
-      - Lista de *String*
-      - Nombre representativo de los macronutrientes y micronutrientes presentes en el ingrediente
-    - Cantidad de Nutrientes
-      - Lista de números flotantes
-      - Cantidad de cada uno de los nutrientes presentes en 100gr del ingrediente
+    - Nutrientes
+      - Nombre de Nutrientes
+        - Lista de *String*
+        - Nombre representativo de los macronutrientes y micronutrientes presentes en el ingrediente
+      - Cantidad de Nutrientes
+        - Lista de números flotantes
+        - Cantidad de cada uno de los nutrientes presentes en 100gr del ingrediente
+    - Precio
+      - Valores flotantes positivos
+      - Precio (costo) de adquirir cierta medida del ingrediente
+    - Unidad de Medición
+      - *String*
+      - Unidad usada para determinar el precio
 * Fecha de Extracción:
     - Fecha en la que se recuperó la receta
 * Versión:
@@ -163,10 +189,10 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
     - Número/representación de la versión en la DB
 
 ## Almacenamiento y Organización de los Datos
-De los objetos relevantes, cada uno pertenece a un tipo de database diferente, esto debido a la naturaleza de cómo se tienen que almacenar para mejorar su disposición para el sistema de IA y, por lo tanto, al usuario final. Una parte de los datos extraídos no son visibles para el usuario (documentos, ciertas recetas que no son de su gusto) pero que sí lo son para la IA al momento de consultar y generar sugerencias al usuario. La parte de los datos son los que el mismo usuario genera como el registro de su ingesta de macronutrientes y micronutrientes a lo largo del tiempo, así como las recetas que le son sugeridas por la IA o que el busca dentro de la aplicación.
+De los objetos relevantes, cada uno pertenece a un tipo de database diferente, esto debido a la naturaleza de cómo se tienen que almacenar para mejorar su disposición para el sistema de IA y, por lo tanto, al usuario final (los comités en cada escuela). Una parte de los datos extraídos no son visibles para el usuario (documentos, ciertas recetas) pero que sí lo son para la IA al momento de consultar y generar sugerencias de los menús a la escuelas. En cambio, la mayor parte de las recetas serán visibles por el usuario al momento que empiece a explorar las posibilidades de preparaciones.
 
 ### Almacenamiento
-Los datos que son extraídos y transformados serán almacenados en tres tipos de de bases de datos, y adicionalmente una base de datos para hacer el registro de los nutrientes consumidos por los usuarios:
+Los datos que son extraídos y transformados serán almacenados en tres tipos de bases de datos:
 * SQL DB en Postgres para almacenar los datos de las recetas (ingredientes, aportes nutricionales, referencias URI a sus imágenes). Tanto en development y production se emplea la ejecución local (en el host) de PostgresSQL
 ```mermaid
 erDiagram
@@ -179,6 +205,8 @@ erDiagram
         int Calories
         int Proteins
         int Fats
+        float Price
+        text UnitMeasurement
     }
     IMAGES {
         text URI
@@ -187,11 +215,13 @@ erDiagram
     RECIPES {
         text Name
         int TotalTime
+        int Servings
         text Directions
         int Calories
         int Proteins
         int Fats
         text Source
+        float PricePerServing
     }
 
     INGREDIENTS }|--|{ NUTRIENTS : Contains
@@ -200,34 +230,9 @@ erDiagram
 ```
 * Almacenamiento basado en Objetos (Object-based Storage) para almacenar las imágenes de las recetas. En development se emplea el almacenamiento local y en production S3 de AWS
 * Vector DB para almacenar los embeddings de los documentos y textos extraídos. Tanto en development y production se emplea la ejecución local  (en el host) de Qdrant (se considera usar S3 de AWS para almacenar los embeddings en production)
-* SQL DB en Postgres para almacenar los datos generados por los usuarios (preferencia de recetas, nutrientes consumidos) incluyendo la información de su perfile (nombre de usuario, nacionalidad, datos como peso, estatura, edad y genero). Tanto en development y production se emplea la ejecución local de PostgresSQL
-```mermaid
-erDiagram
-    direction LR;
-    USERS {
-        char Username
-        text Nationality
-        int Weight
-        int Height
-        int Age
-        bool Gender
-    }
-    NUTRIENTS {
-        text Name
-    }
-    RECIPES {
-        text name
-    }
-
-    USERS }o--|{ NUTRIENTS : Consumes
-    USERS }o--|{ RECIPES : Prefers
-```
 
 ### Organización
-Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar los nutrientes que ha consumido, y que estos paneles se encuentren en tabs en un menú lateral ocultable:
-* Para la interacción con la IA y la captura de los primeros datos fisiológicos-médicos de un paciente, se tiene contemplado el crear un chat estilo Gemini, ChatGPT o DeepSeek para permitir una transición suave para el uso de nuestra herramienta 
-* Para presentarle al usuario las propuestas de recetas, se tiene planeado hacer un mini calendario donde cada entrada sea una receta correspondiente a un día y hora. Con esta disposición podrá ver qué comidas prefiere comer o no, para así mismo solicitar a la IA por medio de un chat su respectiva modificación o cambio. Además, al momento de que el usuario le hace click a una de las recetas pueda ver su información nutricional, ingredientes y una imagen ilustrativa de la receta
-* Para que el usuario pueda visualizar el registro de nutrientes que ha consumido a lo largo del tiempo y tener una visión general de su salud nutricional, se plantea hacer un dashboard interactivo con plots intuitivos
+Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar las posibles preparaciones con las que cuenta el sistema, y que estos paneles se encuentren en tabs en un menú lateral ocultable:
 
 ## Pipelines
 * [*E*] De la página [allrecipes](www.allrecipes.com), extraje las recetas de las diferentes cocinas con las que contaba

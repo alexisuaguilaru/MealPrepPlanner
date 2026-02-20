@@ -5,16 +5,22 @@
 - [Objetivo General](#objetivo-general)
 - [Objetivos Particulares](#objetivos-particulares)
 - [ETL Pipelines](#etl-pipelines)
+- [Regulaciones (Legal)](#regulaciones-legal)
+- [Referencias](#referencias)
 
 ## Problemática
-Este proyecto surge de uno de los principales problemas que he tenido cómo foráneo, y que he visto que muchas otras personas sufren de ello: No saber qué comer durante su día o semana. Planear qué comidas vas a preparar y hacer te ahorra tanto tiempo como dinero, debido a que compras lo necesario para las preparaciones y solo tienes que bloquear un espacio de tu tiempo para hacer las preparaciones para toda tu semana; aunque existe vídeos en YouTube sobre esta técnica de "Meal Prep" orientada para estudiantes, profesionales u oficinistas, de los pocos vídeos que he visto muchos de ellos no hacen una planeación más allá de una semana o de los días laborales, y casi siempre se enfocan en la comida principal (la del mediodía). Por ello, el usar una IA capaz de planificar tus tres comidas diarias durante una semana completa se vuelve un asistente que pueda facilitar mucho tu estilo de vida y mejorar incluso tu alimentación.
+En las escuela de tiempo (jornada) completa o, en general, en cualquier institución educativa se tiende a tener una estigma negativa hacia los alimentos que ofrecen, tachándolos de alimentos de baja calidad o con poco valor nutricional; y además, los menús ofertados pueden son poco variados a lo largo de las semanas haciendo que los niños y jóvenes pierdan el interés de comer de forma saludable o, incluso, de probar otras opciones de alimentos. Por ello, pueden existir una aparente desnutrición entre los estudiantes por falta de más opciones y variedad, situación que se puede resolver a través de una planificación cuidadosa de los menús semanales.
 
 ## Objetivo General
-Crear un ChatBot a modo de asistente personal capaz de comprender y analizar el perfil físico-salud y rutina diaria de una persona para generar una planificación de sus tres comidas diarias durante una semana completa de forma que sea totalmente customizable y adaptable al usuario basada en las recetas y alimentos de México. 
+Crear un repositorio digital de recetas saludables y variadas basadas en la cocina regional mexicana, que sean fáciles de consultar usando criterios como: aportes nutricionales, precio por porción y tiempo de preparación. 
 
 ## Objetivos Particulares
-* Crear ETL pipelines para la extracción de recetas (ingredientes, instrucciones y valores nutricionales) y hacer loaded hacia una base de datos SQL
-* Crear ETL pipelines para la extracción de textos y documentos sobre nutrición, salud y manejo de alimentos, y hacer loaded hacia una base de datos vectorial
+* Desarrollar e implementar *ETL Pipelines* para:
+    - Extraer aportes nutricionales y precio estimado de ingredientes de la cocina mexicana. Cargar los datos hacia una base de datos SQL en Postgres
+    - Extraer tiempo total de preparación, porciones por preparación, ingredientes, instrucciones de elaboración y aportes nutricionales de recetas. Añadir estimación de precio por porción y valores de aportes nutricionales faltantes. Cargar los datos hacia una base de datos SQL en Postgres
+    - Extraer y descargar imágenes representativas y/o ilustrativas de las recetas extraídas. Cargar las imágenes hacia un almacenamiento basado en objetos
+    - Extraer textos, documentos y artículos sobre nutrición, salud, manejo de alimentos, técnicas de preparación y políticas públicas de alimentación saludable en las escuelas e instituciones educativas. Generar los embeddings de los textos y cargarlos hacia una base de datos vectorial en Qdrant
+
 * Seleccionar modelar con capacidades de tooling y reasoning
 * Crear conexión del modelo hacia la DB vectorial para obtener los textos y documentos para adecuados según el usuario
 * Crear conexión del modelo hacia la SQL DB por medio de MCP para obtener recetas específicas en base a una criteria
@@ -23,3 +29,8 @@ Crear un ChatBot a modo de asistente personal capaz de comprender y analizar el 
 * Crear un buscador de recetas (recetarios) con las recetas extraídas 
 
 ## [ETL Pipelines](./ETL_Pipeline/DOCS.md)
+
+## Regulaciones (Legal)
+* Sellos alimenticios
+  
+## Referencias
