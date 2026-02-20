@@ -83,12 +83,16 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
       - Valores enteros positivos
       - Número de porciones o raciones por preparación
     - Ingredientes
-      - Nombre de Ingredientes
-        - Lista de *strings* 
-        - Lista que contiene los nombres de cada ingrediente necesario para preparar la receta
-      - Cantidad de Ingredientes
-        - Lista de números flotantes
-        - Lista que contiene la cantidad de cada ingrediente para preparar la receta
+      - Lista de ingredientes
+      - Nombre
+        - *String* 
+        - Nombre del ingrediente necesario para preparar la receta
+      - Cantidad
+        - Número flotante
+        - Cantidad del ingrediente para preparar la receta
+      - Unidades de Medida
+        - *String*
+        - Unidad para medir la cantidad de un ingrediente
     - Instrucciones
       - Lista de *strings*
       - Pasos detallados para elaborar la receta 
@@ -96,12 +100,13 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
       - Número flotante
       - El total de aporte energético de una porción de la receta 
     - Nutrientes
-      - Nombre de Nutrientes
-        - Lista de *String*
-        - Nombre representativo de los macronutrientes y micronutrientes presentes en una receta
-      - Cantidad de Nutrientes
-        - Lista de números flotantes
-        - Cantidad de cada de uno de los nutrientes presente en la receta
+      - Lista de los aportes nutricionales
+      - Nombre
+        - *String*
+        - Nombre representativo del nutriente presente en una receta
+      - Cantidad
+        - Número flotante
+        - Cantidad del nutrientes presente en la receta
     - Precio por Porción
       - Valores flotantes positivos
       - Precio (costo) estimado de cada porción

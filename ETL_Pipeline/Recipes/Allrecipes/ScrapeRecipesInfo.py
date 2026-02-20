@@ -17,7 +17,11 @@ async def MainScrapRecipeInformation(RecipeLink: str):
         'name': 'Recipe Information about Ingredients and Quantities',
         'baseSelector': 'ul.mm-recipes-structured-ingredients__list',
         'fields': [
-            {'name': 'Ingredients', 'selector': 'li', 'type': 'list', 'fields':[{'name': 'ingredient','type': 'text'},]},
+            {'name': 'Ingredients', 'selector': 'li', 'type': 'list', 'fields':[
+                {'name': 'quantity','selector': 'span[data-ingredient-quantity="true"]','type': 'text', 'default': 0},
+                {'name': 'unit','selector': 'span[data-ingredient-unit="true"]','type': 'text', 'default': ''},
+                {'name': 'name','selector': 'span[data-ingredient-name="true"]','type': 'text', 'default': ''},
+            ]},
         ]
     }
 

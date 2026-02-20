@@ -1,3 +1,12 @@
+def CleanRecipe(Recipe: list[list[dict]]) -> dict:
+    return {
+        'Name': '',
+        **CleanTimeServings(Recipe),
+        'Ingredients': CleanIngredients(Recipe),
+        'Instructions': CleanInstructions(Recipe),
+        'NutritionalFacts': CleanNutritionalFacts(Recipe)
+    }
+
 def CleanTimeServings(Recipe: list[list[dict]]):
     clean_times = {}
     for item in Recipe[0]:
@@ -9,11 +18,7 @@ def CleanTimeServings(Recipe: list[list[dict]]):
     return clean_times
 
 def CleanIngredients(Recipe: list[list[dict]]):
-    ingredients = []
-    for section_ingredients in Recipe[1]:
-        ingredient_list = section_ingredients['Ingredients']
-        ingredients.extend(ingredient['ingredient'] for ingredient in ingredient_list)
-    return ingredients
+    return Recipe[1][0]['Ingredients']
 
 def CleanInstructions(Recipe: list[list[dict]]):
     instructions = []

@@ -6,7 +6,7 @@ async def MainScrapRecipesFromCuisine(CuisineLink: str):
         'name': 'Recipes from a Cuisine',
         'baseSelector': 'a.comp.mntl-card-list-items.mntl-universal-card.mntl-document-card.mntl-card.card.card--no-image',
         'fields': [
-            {'name': 'Recipe_Name', 'selector': 'span.card__title-text', 'type': 'text'},
+            {'name': 'Recipe Name', 'selector': 'span.card__title-text', 'type': 'text'},
             {'name': 'Link', 'type': 'attribute', 'attribute': 'href'}
         ]
     }
