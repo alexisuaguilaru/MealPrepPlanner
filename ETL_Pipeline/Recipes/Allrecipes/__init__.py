@@ -1,1 +1,1 @@
-from .ScrapeMain import MainScrapping
+from .ScrapeMain import MainScraping

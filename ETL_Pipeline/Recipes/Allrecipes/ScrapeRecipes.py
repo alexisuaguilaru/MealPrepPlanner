@@ -1,7 +1,7 @@
 from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
 import json
 
-async def MainScrapRecipesFromCuisine(CuisineLink: str):
+async def MainScrapeRecipesFromCuisine(CuisineLink: str):
     ExtractionSchema = {
         'name': 'Recipes from a Cuisine',
         'baseSelector': 'a.comp.mntl-card-list-items.mntl-universal-card.mntl-document-card.mntl-card.card.card--no-image',

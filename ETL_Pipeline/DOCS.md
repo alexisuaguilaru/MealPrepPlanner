@@ -13,6 +13,7 @@
   - [Almacenamiento](#almacenamiento)
   - [Organización](#organización)
 - [Pipelines](#pipelines)
+  - [Pipeline para allrecipes](#pipeline-para-allrecipes)
 
 ## Data Sources
 Fuentes de datos para cada tipo de base de datos que se van a poblar a lo largo del proyecto. Se tiene contemplado lo siguiente:
@@ -237,10 +238,12 @@ erDiagram
 * Vector DB para almacenar los embeddings de los documentos y textos extraídos. Tanto en development y production se emplea la ejecución local  (en el host) de Qdrant (se considera usar S3 de AWS para almacenar los embeddings en production)
 
 ### Organización
-Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar las posibles preparaciones con las que cuenta el sistema, y que estos paneles se encuentren en tabs en un menú lateral ocultable:
+Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar las posibles preparaciones con las que cuenta el sistema, y que estos paneles se encuentren en tabs en un menú lateral ocultable.
 
 ## Pipelines
-* [*E*] De la página [allrecipes](www.allrecipes.com), extraje las recetas de las diferentes cocinas con las que contaba
-* [*T*] De cada receta, solo obtuve y formatee los valores y atributos de interés para el proyecto (ingredientes, pasos de elaboración, información nutricional)
-* [*L*] De los atributos extraídos y transformados de cada receta, son vaciados hacia una base de datos SQL con fields basados en texto
-* Para la construcción de la pipeline (principalmente la parte de la extraction y parte de la transformation) usé [Crawl4ai](https://docs.crawl4ai.com/), una herramienta que facilita el web scrapping usando una sintaxis más ligera y un procedimiento más corto para formatear el output 
+Para la creación de las diferentes pipelines y process dentro del ETL se usó principalmente Python junto con [Crawl4ai](https://crawl4ai.com/), lo cual permitió que la tarea de extracción fuera simple de realizar y sin complicaciones.
+
+### Pipeline para allrecipes
+* [*E*] De la página [allrecipes](https://www.allrecipes.com), se extrajeron las recetas de la cocina mexicana únicamente. De los datos presentes en la página, no se pudieron recopilar los referentes a precio por porción
+* [*T*] De cada receta, solo se formatearon los valores y atributos de interés para el proyecto para adecuarse al esquema de metadatos, además se añadieron aquellos valores faltantes en base a los demás datos extraídos
+* [*L*] De los atributos extraídos, transformados y añadidos de cada receta, son cargados hacia la base de datos SQL usando las adecuadas inserciones

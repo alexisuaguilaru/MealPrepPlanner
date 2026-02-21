@@ -1,3 +1,3 @@
-from .Allrecipes import MainScrapping as MainAllrecipes
+from .Allrecipes import MainScraping as MainAllrecipes
 from .EatRight import * 
 from .Kiwilimon import *

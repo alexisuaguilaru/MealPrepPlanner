@@ -1,7 +1,7 @@
 from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
 import json
 
-async def MainScrapCuisines():
+async def MainScrapeCuisines():
     ExtractionSchema = {
         'name': 'Cuisines',
         'baseSelector': 'li.comp.mntl-link-list__item',
