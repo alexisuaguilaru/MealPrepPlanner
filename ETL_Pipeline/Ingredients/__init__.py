@@ -1,0 +1,1 @@
+from .BEDCA import MainScraping as MainBEDCA
