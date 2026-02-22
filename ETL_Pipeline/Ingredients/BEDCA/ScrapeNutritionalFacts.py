@@ -1,5 +1,9 @@
-from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy , BrowserConfig , DefaultTableExtraction
+import asyncio
+import random
 import json
+from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+
+from ...Utils import BasicBrowserConfig_NoPersistentContext , BasicCrawlerRunConfig
 
 async def MainScrapeIngredientNutritionalFacts(IngredientID: str):
     SessionID = 'Session_IngredientInformation_BEDCA'
@@ -13,6 +17,10 @@ async def MainScrapeIngredientNutritionalFacts(IngredientID: str):
             {'name': 'Measure', 'selector': 'td:nth-child(3)', 'type': 'text'},
         ]
     }
+
+    Browser = BrowserConfig(
+        **BasicBrowserConfig_NoPersistentContext,
+    )
 
     Command = [
         f"""
@@ -31,13 +39,14 @@ async def MainScrapeIngredientNutritionalFacts(IngredientID: str):
         session_id = SessionID,
         js_code = Command,
         wait_for = 'css:tr.row-a',
-        wait_until = 'networkidle',
+        **BasicCrawlerRunConfig,
     )
 
-    async with AsyncWebCrawler() as crawler:
+    async with AsyncWebCrawler(config=Browser) as crawler:
         result: CrawlResult  = await crawler.arun(
             url = 'https://www.bedca.net/bdpub/index.php',
             config = CrawlerConfig,
         )
     
+    await asyncio.sleep(random.uniform(2, 5))
     return json.loads(result.extracted_content)

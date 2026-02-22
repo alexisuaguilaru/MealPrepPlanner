@@ -1,5 +1,9 @@
-from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+import asyncio
+import random
 import json
+from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+
+from ...Utils import BasicBrowserConfig , BasicCrawlerRunConfig
 
 async def MainScrapeRecipeInformation(RecipeLink: str):
     SessionID = 'Session_RecipeInformation_Allrecipes'
@@ -45,11 +49,16 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
         ]
     }
 
+    Browser = BrowserConfig(
+        **BasicBrowserConfig,
+    )
+    
     CrawlerConfig = CrawlerRunConfig(
         session_id = SessionID,
+        **BasicCrawlerRunConfig,
     )
 
-    async with AsyncWebCrawler() as crawler:
+    async with AsyncWebCrawler(config=Browser) as crawler:
 
         CrawlerConfig.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_TimesServings)
         result_TimesServings: CrawlResult  = await crawler.arun(
@@ -62,6 +71,8 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
             url = RecipeLink,
             config = CrawlerConfig,
         )
+
+        await asyncio.sleep(random.uniform(2, 5))
 
         CrawlerConfig.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_Directions)
         result_Directions: CrawlResult  = await crawler.arun(
@@ -81,4 +92,5 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
         result_Directions,
         result_NutritionalFacts,
     ]
+    await asyncio.sleep(random.uniform(2, 5))
     return [json.loads(result.extracted_content) for result in Results]

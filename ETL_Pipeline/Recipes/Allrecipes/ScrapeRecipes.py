@@ -1,5 +1,9 @@
-from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+import asyncio
+import random
 import json
+from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+
+from ...Utils import BasicBrowserConfig , BasicCrawlerRunConfig
 
 async def MainScrapeRecipesFromCuisine(CuisineLink: str):
     ExtractionSchema = {
@@ -11,14 +15,20 @@ async def MainScrapeRecipesFromCuisine(CuisineLink: str):
         ]
     }
 
-    CrawlerConfig = CrawlerRunConfig(
-        extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
+    Browser = BrowserConfig(
+        **BasicBrowserConfig,
     )
 
-    async with AsyncWebCrawler() as crawler:
+    CrawlerConfig = CrawlerRunConfig(
+        extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
+        **BasicCrawlerRunConfig,
+    )
+
+    async with AsyncWebCrawler(config=Browser) as crawler:
         result: CrawlResult  = await crawler.arun(
             url = CuisineLink,
             config = CrawlerConfig,
         )
-        
+
+    await asyncio.sleep(random.uniform(2, 5))   
     return json.loads(result.extracted_content)
