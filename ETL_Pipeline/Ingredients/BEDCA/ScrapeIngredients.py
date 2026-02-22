@@ -3,11 +3,12 @@ import json
 
 async def MainScrapeIngredients():
     ExtractionSchema = {
-        'name': 'Ingredients with Nutritional Facts',
+        'name': 'List of Ingredients',
         'baseSelector': 'table#querytable1 tr',
         'fields': [
-            {'name': 'SpnName', 'selector': 'td:nth-child(2)', 'type': 'text'},
-            {'name': 'EngName', 'selector': 'td:nth-child(3)', 'type': 'text'},
+            {'name': 'Ingredient ID', 'selector': 'td', 'type': 'text'},
+            {'name': 'Spanish Name', 'selector': 'td:nth-child(2)', 'type': 'text'},
+            {'name': 'English Name', 'selector': 'td:nth-child(3)', 'type': 'text'},
         ]
     }
 
@@ -20,7 +21,7 @@ async def MainScrapeIngredients():
     CrawlerConfig = CrawlerRunConfig(
         extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
         js_code = CommandInteractions,
-        wait_for = 'css:tr.row-b',
+        wait_for = 'css:tr.row-a',
         wait_until = 'networkidle',
     )
 

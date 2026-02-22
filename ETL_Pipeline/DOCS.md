@@ -126,9 +126,12 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
 * Formato de Archivo:
     - `.sql` (Debido a que estos valores están en una base de datos SQL)
 * Atributos:
-    - Nombre del Ingrediente:
+    - Nombre del Ingrediente en Español:
       - *String*
-      - Nombre completo de un ingrediente
+      - Nombre completo de un ingrediente en español
+    - Nombre del Ingrediente en Inglés:
+      - *String*
+      - Nombre completo de un ingrediente en inglés
     - Calorías
       - Número flotante
       - Aporte energético en 100gr del ingrediente
@@ -139,6 +142,9 @@ Para cada objeto abstracto/relevante para las bases de datos, se definen sus esq
       - Cantidad de Nutrientes
         - Lista de números flotantes
         - Cantidad de cada uno de los nutrientes presentes en 100gr del ingrediente
+      - Unidad de Medición
+        - List de *strings*
+        - Unidad de medida (g, mg, ml) empleada para medir el nutriente
     - Precio
       - Valores flotantes positivos
       - Precio (costo) de adquirir cierta medida del ingrediente

@@ -2,7 +2,7 @@ from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , JsonCssE
 import json
 
 async def MainScrapeRecipeInformation(RecipeLink: str):
-    SessionID = 'Session_RecipeInformation'
+    SessionID = 'Session_RecipeInformation_Allrecipes'
 
     ExtractionSchema_TimesServings = {
         'name': 'Recipe Information about Times and Serving',
