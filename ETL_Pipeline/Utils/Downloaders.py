@@ -13,12 +13,13 @@ def DownloadDataset(
     }
 
     dataset_path = Path(DatasetPath)
-    dataset_path.parent.mkdir(parents=True)
+    dataset_path.parent.mkdir(parents=True,exist_ok=True)
     
-    with requests.get(DatasetURL,headers=Headers,stream=True) as response:
-        with open(dataset_path, 'wb') as file_dataset:
-            for chunk in response.iter_content(chunk_size=1024*1024*16):
-                if chunk: 
-                    file_dataset.write(chunk)
+    if not dataset_path.exists():
+        with requests.get(DatasetURL,headers=Headers,stream=True) as response:
+            with open(dataset_path,'wb') as file_dataset:
+                for chunk in response.iter_content(chunk_size=1024*1024*16):
+                    if chunk: 
+                        file_dataset.write(chunk)
     
     return dataset_path
