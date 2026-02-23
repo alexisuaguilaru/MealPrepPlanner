@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from ETL_Pipeline import MainAllrecipes , MainBEDCA
+from ETL_Pipeline import MainDatasetPricesPROFECO , MainAllrecipes , MainBEDCA 
 from .Logger import ColorFormatter
 
 _logger = logging.getLogger(' WEB SCRAPING ')
@@ -17,9 +17,12 @@ if __name__ == "__main__":
     _logger.info('No issues with imports')
     _logger.info('Start Web Scraping')
 
+    _logger.info('Start Ingredients Prices from PROFECO')
+    MainDatasetPricesPROFECO()
+
     _logger.info('Start Web Scraping of Ingredients from BEDCA')
-    ingredients_bedca = MainBEDCA()
-    print(*ingredients_bedca,sep='\n')
+    # ingredients_bedca = MainBEDCA()
+    # print(*ingredients_bedca,sep='\n')
 
     _logger.info('Start Web Scraping of Recipes from Allrecipes')
     # recipes_allrecipes = MainAllrecipes()

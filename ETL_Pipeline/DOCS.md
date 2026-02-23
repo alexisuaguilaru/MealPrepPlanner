@@ -42,6 +42,7 @@ De las siguientes fuentes se van a extraer: Datos estadísticos (valores nutrici
 * [PROFECO: Quién es Quién en los Precios](https://qqp.profeco.gob.mx/)
     - Repositorio de precios de productos e ingredientes ofertados en supermercados
     - Extraer el precio de los ingredientes de interés
+    - Datos abiertos del programa que contiene toda la base de datos/productos en todos los estados: https://www.datos.gob.mx/dataset/?q=quién+es+quién
 * [Sistema Nacional de Información e Integración de Mercados (SNIIM)](https://www.economia-sniim.gob.mx/)
     - Repositorio de precios de productos e ingredientes ofertados en mercados y centrales de abastos
     - Extraer el precio de ingredientes frescos de interés

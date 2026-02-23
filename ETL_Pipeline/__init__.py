@@ -1,4 +1,4 @@
 from .Utils import *
 
-from .Recipes import MainAllrecipes
-from .Ingredients import MainBEDCA
+from .Recipes import MainAllrecipes 
+from .Ingredients import MainDatasetPricesPROFECO , MainBEDCA
