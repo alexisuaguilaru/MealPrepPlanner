@@ -13,7 +13,8 @@
   - [Almacenamiento](#almacenamiento)
   - [Organización](#organización)
 - [Pipelines](#pipelines)
-  - [Pipeline para allrecipes](#pipeline-para-allrecipes)
+  - [Pipeline para BEDCA](#pipeline-para-bedca)
+  - [Pipeline para Allrecipes](#pipeline-para-allrecipes)
 
 ## Data Sources
 Fuentes de datos para cada tipo de base de datos que se van a poblar a lo largo del proyecto. Se tiene contemplado lo siguiente:
@@ -248,9 +249,14 @@ erDiagram
 Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar las posibles preparaciones con las que cuenta el sistema, y que estos paneles se encuentren en tabs en un menú lateral ocultable.
 
 ## Pipelines
-Para la creación de las diferentes pipelines y process dentro del ETL se usó principalmente Python junto con [Crawl4ai](https://crawl4ai.com/), lo cual permitió que la tarea de extracción fuera simple de realizar y sin complicaciones.
+Para la creación de las diferentes pipelines y procesos dentro del ETL se usó principalmente Python junto con [Crawl4ai](https://crawl4ai.com/), lo cual permitió que la tarea de extracción fuera simple de realizar y sin complicaciones, además de ofrecer que el resultado de la extracción sea formateado directamente en archivos JSON para su fácil transformación.
 
-### Pipeline para allrecipes
-* [*E*] De la página [allrecipes](https://www.allrecipes.com), se extrajeron las recetas de la cocina mexicana únicamente. De los datos presentes en la página, no se pudieron recopilar los referentes a precio por porción
-* [*T*] De cada receta, solo se formatearon los valores y atributos de interés para el proyecto para adecuarse al esquema de metadatos, además se añadieron aquellos valores faltantes en base a los demás datos extraídos
-* [*L*] De los atributos extraídos, transformados y añadidos de cada receta, son cargados hacia la base de datos SQL usando las adecuadas inserciones
+### Pipeline para BEDCA
+* [*E*] De la página [Base de Datos BEDCA](https://www.bedca.net/bdpub/index.php), se extrajeron los valores y aportes nutricionales de los ingredientes que contienen en diferentes presentaciones.
+* [*T*] De cada ingrediente, solo se formatearon los valores nutricionales según el esquema de las recetas, es decir, generar una lista con los nutrientes y sus aportes.
+* [*L*] Los esquemas transformados se almacenan de forma temporal como archivos JSON para su posterior carga a la base de datos SQL.
+
+### Pipeline para Allrecipes
+* [*E*] De la página [Allrecipes](https://www.allrecipes.com), se extrajeron los ingredientes, instrucciones y aportes nutricionales de las recetas pertenecientes a la cocina mexicana.
+* [*T*] De cada receta, solo se formatearon los valores y atributos de interés para el proyecto para adecuarse al esquema de metadatos definido en las secciones anteriores. 
+* [*L*] Los esquemas completos de cada recetas son guardados de forma temporal como archivos JSON para su futura carga hacia la base de datos SQL una vez que se tengan los restantes datos.
