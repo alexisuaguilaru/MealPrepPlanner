@@ -10,7 +10,7 @@ def MainClean(DatasetPath,IndexPart):
     FilteredDataset.query("catalogo in @relevant_categories",inplace=True)
     CleanedDataset = FilteredDataset[['producto','presentacion','categoria','catalogo','precio']].copy()
 
-    CleanedDataset.to_csv(DatasetPath.parent/f'filtered_{IndexPart}.csv')
+    CleanedDataset.to_csv(DatasetPath.parent/f'filtered_{IndexPart}.csv',index=False)
     return CleanedDataset
 
 def FilterChunksDataset(ChunkedDatase) -> pd.DataFrame:
