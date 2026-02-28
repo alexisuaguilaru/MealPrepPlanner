@@ -18,7 +18,7 @@ if __name__ == "__main__":
     _logger.info('Start Web Scraping')
 
     _logger.info('Start Ingredients Prices from PROFECO')
-    MainDatasetPricesPROFECO()
+    # MainDatasetPricesPROFECO()
 
     _logger.info('Start Web Scraping of Ingredients from BEDCA')
     # ingredients_bedca = MainBEDCA()
