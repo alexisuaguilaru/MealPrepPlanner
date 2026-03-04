@@ -49,13 +49,24 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
         ]
     }
 
+    ExtractionSchema_Images = {
+        'name': 'Recipe Image',
+        'baseSelector': 'div.loc.article-content',
+        'fields': [
+            {'name': 'Recipe Image', 'selector': 'figure img', 'type': 'attribute', 'attribute': 'src'},
+            {'name': 'Recipe Image', 'selector': 'div#article__photo-ribbon_1-0 a img', 'type': 'attribute', 'attribute': 'src'},
+        ]
+    }
+
     Browser = BrowserConfig(
         **BasicBrowserConfig,
     )
     
+    CrawlerConfig_AllRecipes = BasicCrawlerRunConfig.copy()
+    del CrawlerConfig_AllRecipes['wait_until']
     CrawlerConfig = CrawlerRunConfig(
         session_id = SessionID,
-        **BasicCrawlerRunConfig,
+        **CrawlerConfig_AllRecipes,
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:
@@ -86,11 +97,20 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
             config = CrawlerConfig,
         )
 
+        await asyncio.sleep(random.uniform(0.5,1))
+        
+        CrawlerConfig.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_Images)
+        result_Images: CrawlResult  = await crawler.arun(
+            url = RecipeLink,
+            config = CrawlerConfig,
+        )
+
     Results = [
         result_TimesServings, 
         result_Ingredients, 
         result_Directions,
         result_NutritionalFacts,
+        result_Images,
     ]
     await asyncio.sleep(random.uniform(2, 5))
     return [json.loads(result.extracted_content) for result in Results]

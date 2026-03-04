@@ -19,9 +19,11 @@ async def MainScrapeRecipesFromCuisine(CuisineLink: str):
         **BasicBrowserConfig,
     )
 
+    CrawlerConfig_AllRecipes = BasicCrawlerRunConfig.copy()
+    del CrawlerConfig_AllRecipes['wait_until']
     CrawlerConfig = CrawlerRunConfig(
         extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
-        **BasicCrawlerRunConfig,
+        **CrawlerConfig_AllRecipes,
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:

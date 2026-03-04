@@ -13,7 +13,7 @@ _logger.addHandler(handler_cli)
 
 logging.basicConfig(level = logging.INFO)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     _logger.info('No issues with imports')
     _logger.info('Start Web Scraping')
 
@@ -25,8 +25,8 @@ if __name__ == "__main__":
     # print(*ingredients_bedca,sep='\n')
 
     _logger.info('Start Web Scraping of Recipes from Allrecipes')
-    # recipes_allrecipes = MainAllrecipes()
-    # print(*recipes_allrecipes,sep='\n')
+    recipes_allrecipes = MainAllrecipes()
+    print(*recipes_allrecipes,sep='\n')
 
     _logger.info('No issues found')
     _logger.info('End Web Scraping')

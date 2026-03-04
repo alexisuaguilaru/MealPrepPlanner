@@ -4,7 +4,8 @@ def CleanRecipe(Recipe: list[list[dict]]) -> dict:
         **CleanTimeServings(Recipe),
         'Ingredients': CleanIngredients(Recipe),
         'Instructions': CleanInstructions(Recipe),
-        'NutritionalFacts': CleanNutritionalFacts(Recipe)
+        'NutritionalFacts': CleanNutritionalFacts(Recipe),
+        'Image': CleanImageRecipe(Recipe),
     }
 
 def CleanTimeServings(Recipe: list[list[dict]]):
@@ -32,3 +33,8 @@ def CleanNutritionalFacts(Recipe: list[list[dict]]):
     for nutritional_fact in recipe_facts['Nutritional Facts']:
         nutritional_facts[nutritional_fact['label']] = nutritional_fact['value']
     return nutritional_facts
+
+def CleanImageRecipe(Recipe: list[list[dict]]):
+    images_list = Recipe[4]
+    for image in images_list:
+        if image['Recipe Image']: return image['Recipe Image']
