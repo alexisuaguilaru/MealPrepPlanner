@@ -14,6 +14,7 @@
   - [Organización](#organización)
 - [Pipelines](#pipelines)
   - [Pipeline para BEDCA](#pipeline-para-bedca)
+  - [Pipeline para PROFECO](#pipeline-para-profeco)
   - [Pipeline para Allrecipes](#pipeline-para-allrecipes)
 
 ## Data Sources
@@ -255,6 +256,11 @@ Para la creación de las diferentes pipelines y procesos dentro del ETL se usó 
 * [*E*] De la página [Base de Datos BEDCA](https://www.bedca.net/bdpub/index.php), se extrajeron los valores y aportes nutricionales de los ingredientes que contienen en diferentes presentaciones.
 * [*T*] De cada ingrediente, solo se formatearon los valores nutricionales según el esquema de las recetas, es decir, generar una lista con los nutrientes y sus aportes.
 * [*L*] Los esquemas transformados se almacenan de forma temporal como archivos JSON para su posterior carga a la base de datos SQL.
+
+### Pipeline para PROFECO
+* [*E*] De la página [PROFECO: Quién es Quién en los Precios](https://qqp.profeco.gob.mx/), se extrajeron los precios y descripción de los diferentes productos que se venden en las tiendas y supermercados en el estado de Michoacán.
+* [*T*] Como los datos ya se encontraban tabulados (como datos abiertos), solo se conservó la categoría de cada producto junto con el precio, cantidad del producto y la unidad de medida del producto.
+* [*L*] Los datos tabulados y transformados se almacenan de forma temporal en un archivo CSV para su posterior carga hacia la base de datos SQL.
 
 ### Pipeline para Allrecipes
 * [*E*] De la página [Allrecipes](https://www.allrecipes.com), se extrajeron los ingredientes, instrucciones y aportes nutricionales de las recetas pertenecientes a la cocina mexicana.

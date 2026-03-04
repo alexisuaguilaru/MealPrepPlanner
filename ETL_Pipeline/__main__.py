@@ -18,15 +18,15 @@ if __name__ == '__main__':
     _logger.info('Start Web Scraping')
 
     _logger.info('Start Ingredients Prices from PROFECO')
-    # MainDatasetPricesPROFECO()
+    MainDatasetPricesPROFECO()
 
     _logger.info('Start Web Scraping of Ingredients from BEDCA')
     # ingredients_bedca = MainBEDCA()
     # print(*ingredients_bedca,sep='\n')
 
     _logger.info('Start Web Scraping of Recipes from Allrecipes')
-    recipes_allrecipes = MainAllrecipes()
-    print(*recipes_allrecipes,sep='\n')
+    # recipes_allrecipes = MainAllrecipes()
+    # print(*recipes_allrecipes,sep='\n')
 
     _logger.info('No issues found')
     _logger.info('End Web Scraping')

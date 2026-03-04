@@ -10,6 +10,7 @@ def MainTransform(CompleteDataset):
 
     TransformedDataset = TransformedDataset[valid_matches]
     TransformedDataset[['Quantity','UnitMeasurement']] = [*(presentation_matches[valid_matches].apply(lambda match: match.groups()))]
+    TransformedDataset['Quantity'] = TransformedDataset['Quantity'].astype(float)
     TransformedDataset.drop(columns=['Presentation'],inplace=True)
 
-    return TransformedDataset
+    return TransformedDataset.groupby(['Product','UnitMeasurement']).mean()

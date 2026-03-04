@@ -11,6 +11,6 @@ def MainDatasetETL():
     CompleteDataset.to_csv(DatasetPath_1.parent/'dataset.csv',index=False)
 
     CleanDataset = MainTransform(CompleteDataset)
-    CleanDataset.to_csv(DatasetPath_1.parent/'clean.csv',index=False)
+    CleanDataset.to_csv(DatasetPath_1.parent/'clean.csv',index=True)
 
     return DatasetPath_1.parent/'clean.csv'
