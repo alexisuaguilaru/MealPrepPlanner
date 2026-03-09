@@ -75,7 +75,6 @@ async def PerformLogin():
             url = 'https://www.kiwilimon.com/mi-cuenta/perfil',
             config = CrawlerConfig_Verify,
         )
-        print(result.url,result.redirected_url)
 
         if 'login' in result.redirected_url:
             result: CrawlResult = await crawler.arun(
