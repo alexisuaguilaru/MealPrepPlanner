@@ -3,9 +3,9 @@ import asyncio
 
 from .ScrapeRecipes import MainScrapeRecipesFromPage
 
-def MainScraping():
+def MainScraping(NumClicks: int = 2):
     RecipesPath = Path('Datasets/Recipes/Kiwilimon/')
     RecipesPath.mkdir(parents=True,exist_ok=True)
 
-    RecipesList = asyncio.run(MainScrapeRecipesFromPage())
+    RecipesList = asyncio.run(MainScrapeRecipesFromPage(NumClicks))
     return RecipesList
