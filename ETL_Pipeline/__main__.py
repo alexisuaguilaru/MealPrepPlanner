@@ -13,6 +13,12 @@ _logger.addHandler(handler_cli)
 
 logging.basicConfig(level = logging.INFO)
 
+import json
+def GetLoginCredentials():
+    with open('./ETL_Pipeline/CREDENTIAL.json','r') as CredentialsFile:
+        Credentials = json.load(CredentialsFile)
+        return Credentials['Kiwilimon'].values()
+
 if __name__ == '__main__':
     _logger.info('No issues with imports')
     _logger.info('Start Web Scraping')

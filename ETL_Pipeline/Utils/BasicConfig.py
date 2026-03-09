@@ -1,4 +1,8 @@
 import random
+import os
+
+ScriptDir = os.path.dirname(os.path.abspath(__file__))
+UserDataFile = os.path.join(ScriptDir,'.SessionsCrawlData')
 
 HEADLESS = False
 BasicBrowserConfig = dict(
@@ -7,7 +11,7 @@ BasicBrowserConfig = dict(
     enable_stealth = True,
     extra_args = ["--disable-blink-features=AutomationControlled"],
     use_persistent_context = True,
-    user_data_dir = './.crawl_data',
+    user_data_dir = UserDataFile,
 )
 BasicBrowserConfig_NoPersistentContext = dict(
     headless = HEADLESS,

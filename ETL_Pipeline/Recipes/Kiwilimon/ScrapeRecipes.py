@@ -1,7 +1,7 @@
 import asyncio
 import random
 import json
-from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy , VirtualScrollConfig
+from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
 
 from ...Utils import BasicBrowserConfig , BasicCrawlerRunConfig
 
