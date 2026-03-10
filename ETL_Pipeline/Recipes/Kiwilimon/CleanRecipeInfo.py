@@ -10,9 +10,17 @@ def CleanRecipe(Recipe: list[list[dict]]) -> dict:
     }
 
 def CleanTime(Recipe):
-    Times = Recipe[0][0].values()
-    total_time = sum(int(re.search(r'\d+',time)[0]) for time in Times)
-    return {'Total Time': f'{total_time} mins'}
+    RecipeTimes = Recipe[0][0].values()
+    time_hours = 0
+    times_minutes = 0
+    for times in RecipeTimes:
+        time_hour = re.search(r'(\d+)hs?',times)
+        time_mins = re.search(r'(\d+) ?mins?',times)
+
+        if time_hour: time_hours += int(time_hour.group(1))
+        if time_mins: times_minutes += int(time_mins.group(1))
+        
+    return {'Total Time': f'{time_hours}h {times_minutes} mins'}
 
 def CleanServingsIngredients(Recipe):
     clean_servings_ingredients = {}
