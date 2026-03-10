@@ -67,6 +67,8 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
     CrawlerConfig = CrawlerRunConfig(
         session_id = SessionID,
         **CrawlerConfig_AllRecipes,
+        scan_full_page = True,
+        max_scroll_steps = 2,
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:

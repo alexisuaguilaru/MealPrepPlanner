@@ -4,14 +4,14 @@ import asyncio
 from .ScrapeRecipes import MainScrapeRecipesFromCuisine
 from .ScrapeRecipesInfo import MainScrapeRecipeInformation
 from .CleanRecipeInfo import CleanRecipe
-from .SaveRecipe import SaveCleanRecipeInfo
+from ...Utils import SaveCleanRecipeInfo
 
 def MainScraping():
     RecipesPath = Path('Datasets/Recipes/Allrecipes/')
     RecipesPath.mkdir(parents=True,exist_ok=True)
 
     MexicanRecipes = asyncio.run(MainScrapeRecipesFromCuisine('https://www.allrecipes.com/recipes/728/world-cuisine/latin-american/mexican/'))
-    for mexican_recipe in MexicanRecipes[4:8]:
+    for mexican_recipe in MexicanRecipes:
         recipe_name:str = mexican_recipe['Recipe Name']
         recipe_link = mexican_recipe['Link']
         recipe_info = asyncio.run(MainScrapeRecipeInformation(recipe_link))
