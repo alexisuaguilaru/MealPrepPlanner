@@ -1,2 +1,3 @@
-from .PricesPROFECO import MainDatasetPricesPROFECO
 from .BEDCA import MainScraping as MainBEDCA
+from .INSP import MainDatasetINSP
+from .PricesPROFECO import MainDatasetPricesPROFECO
