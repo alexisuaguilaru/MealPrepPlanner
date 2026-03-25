@@ -20,7 +20,7 @@ def CleanTime(Recipe):
         if time_hour: time_hours += int(time_hour.group(1))
         if time_mins: times_minutes += int(time_mins.group(1))
         
-    return {'Total Time': f'{time_hours}h {times_minutes} mins'}
+    return {'Total Time': f'{time_hours} hrs {times_minutes} mins'}
 
 def CleanServingsIngredients(Recipe):
     clean_servings_ingredients = {}

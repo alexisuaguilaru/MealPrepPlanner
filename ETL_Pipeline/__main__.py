@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     _logger.info('Start Web Scraping of Recipes from EatRight')
     recipes_eatright = MainEatRight()
-    print(recipes_eatright)
+    list(recipes_eatright)
 
     _logger.info('No issues found')
     _logger.info('End Web Scraping')
