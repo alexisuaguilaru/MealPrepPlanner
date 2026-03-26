@@ -8,6 +8,7 @@ def CleanRecipe(Recipe: dict):
         'Servings': CleanServings(Recipe),
         'Ingredients': CleanIngredients(Recipe),
         'Instructions': CleanInstructions(Recipe),
+        'NutritionalFacts': CleanNutritionalFacts(Recipe),
         'Image': '',
     }
 
@@ -27,11 +28,12 @@ def CleanTime(Recipe):
     return f'{time_hours} hrs {times_minutes} mins'
 
 def CleanServings(Recipe: dict):
-    servings = re.search(r'[Ss]erves:?\s?(\d*)',Recipe['Servings']).group(1)
+    raw_servings = re.sub(r'<.*?>','',Recipe['Servings Nutritional Facts'])
+    servings = re.search(r'[Ss]erv(ing|e)s?:?\s?(\d+)',raw_servings).group(2)
     return int(servings) 
 
 def CleanIngredients(Recipe: dict):
-    raw_ingredients = Recipe['Ingredients']
+    raw_ingredients = Recipe['Ingredientes']
     ingredients = re.sub(r'</?p>','',raw_ingredients)
     
     list_ingredients = ingredients.split('<br/>\n')
@@ -41,6 +43,39 @@ def CleanIngredients(Recipe: dict):
 
 def CleanInstructions(Recipe: dict):
     return [direction['direction'] for direction in Recipe['Directions']]
+
+def CleanNutritionalFacts(Recipe):
+    paragraphs = Recipe['Servings Nutritional Facts']
+    list_paragraphs = paragraphs.split('</p>\n')
+    
+    for paragraph in list_paragraphs:
+        if 'alories' in paragraph: break
+    for nutrients_paragraph in paragraph.split('<br/>'):
+        if 'alories' in nutrients_paragraph: break
+
+    nutrients_paragraph = re.sub(r'<.*?>','',nutrients_paragraph)
+    nutrients_paragraph = nutrients_paragraph.strip()
+    nutrients_paragraph = nutrients_paragraph.replace('<','')
+    nutrients_paragraph = nutrients_paragraph.replace('>','')
+    nutrients_paragraph = nutrients_paragraph.replace('&lt;','')
+    nutrients_paragraph = nutrients_paragraph.replace('&gt;','')
+
+    nutritional_info_form_1 = r'([\w ]+):?\s*?([\d\.]+[\w\s]*|[Nn]\/?[Aa])'
+    nutritional_info_form_2 = r'([\d\.]+\s?[gmGMUI]*|[Nn]\/?[Aa]):?\s?([\w ]+)'
+    
+    nutritional_facts_info = {}  
+    if (nutrients:=re.findall(nutritional_info_form_1,nutrients_paragraph)):
+        for nutrient , value in nutrients:
+            if len(nutrient) < 3: break
+            nutritional_facts_info[nutrient.strip().title()] = value
+        if len(nutrient) > 3: return nutritional_facts_info
+
+    nutritional_facts_info = {}
+    if (nutrients:=re.findall(nutritional_info_form_2,nutrients_paragraph)):
+        for value , nutrient  in nutrients:
+            if len(nutrient) < 3: break
+            nutritional_facts_info[nutrient.strip().title()] = value
+        if len(nutrient) > 3: return nutritional_facts_info
 
 def ProcessedIngredient(Ingredient: str):
     preprocessed_ingredients = ''
@@ -59,7 +94,7 @@ def ExtractIngredientInfo(Ingredient):
 
     if not full_quantity:
         ingredient_info = {}
-        ingredient_info['quantity'] = 0
+        ingredient_info['quantity'] = ''
         ingredient_info['unit'] = ''
         ingredient_info['name'] = ingredient_name
 
