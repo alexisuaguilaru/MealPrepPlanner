@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     _logger.info('Start Ingredients Prices from SNIIM')
     ingredients_sniim = MainDatasetPricesSNIIM()
-    print(ingredients_sniim)
+    list(ingredients_sniim)
 
     _logger.info('Start Web Scraping of Recipes from Allrecipes')
     # recipes_allrecipes = MainAllrecipes()

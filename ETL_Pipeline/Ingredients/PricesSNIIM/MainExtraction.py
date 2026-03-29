@@ -1,6 +1,6 @@
 import asyncio
 
-from .InteractWithIFrames import MainInteractionAgricultural , MainInteractionLivestock
+from .InteractWithIFrames import MainInteractionAgricultural , MainInteractionLivestock , MainInteractionLivestock_Chicken
 from .ScrapeDataTable import MainScrapeTable
 from .ProcessTable import MainProcessJsonTable
 
@@ -40,5 +40,33 @@ def MainExtractionLivestock(LinkPagesLivestock,DatasetPath):
             ListSources.append(page_link_Livestock)
 
             table_Livestock.to_csv(DatasetPath/ListDatasets[-1])
+
+    return ListSources , ListDatasets
+
+def MainExtractionLivestock_ChickenByProducts(DatasetPath):
+    LinkPages = [
+        'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/SelSem.asp',
+        'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/e_SelHue.asp',
+    ]
+
+    ListDatasets = []
+    ListSources = []
+
+    json_tables_Chicken = asyncio.run(MainInteractionLivestock_Chicken(LinkPages[0]))
+    for index_table , json_table_Chicken in enumerate(json_tables_Chicken,1):
+            table_Chicken = MainProcessJsonTable(json_table_Chicken['Table Data'])
+
+            ListSources.append(LinkPages[0])
+            ListDatasets.append(f'ConsultaPol_{index_table:02}.csv')
+            table_Chicken.to_csv(DatasetPath/ListDatasets[-1])
+
+    json_tables_Eggs = asyncio.run(MainInteractionLivestock(LinkPages[1],'destino','160'))
+    for index_table , json_table_Eggs in enumerate(json_tables_Eggs,1):
+            table_Eggs = MainProcessJsonTable(json_table_Eggs['Table Data'])
+
+            ListDatasets.append(f'ConsultaHue_{index_table:02}.csv')
+            ListSources.append(LinkPages[0])
+
+            table_Eggs.to_csv(DatasetPath/ListDatasets[-1])
 
     return ListSources , ListDatasets

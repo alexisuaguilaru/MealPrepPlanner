@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 
-from .MainExtraction import MainExtractionAgricultural , MainExtractionLivestock
+from .MainExtraction import MainExtractionAgricultural , MainExtractionLivestock , MainExtractionLivestock_ChickenByProducts
 
 from ...Utils import DumpMetadata , CreateMetadataFromSources
 
@@ -25,7 +25,6 @@ def MainDatasetETL():
             'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/e_SelCon.asp?var=Por',
             'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/e_SelCan.asp?var=Cap',
             'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenPec.asp?var=Ovi',
-            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenAve.asp', # Consolidado Semanal, Huevo (Mich), últimos 7 días
         ],
 
         'Fishing': [
@@ -45,9 +44,11 @@ def MainDatasetETL():
     # DumpMetadata(Metadata_Agricultural,dataset_path/'metadata_agricultural.json')
     # ListDatasets += ListDatasets_Agricultural
 
-    ListSources_Livestock , ListDatasets_Livestock = MainExtractionLivestock(MarketCategories['Livestock'][:-1],dataset_path)
-    Metadata_Livestock = CreateMetadataFromSources(ListSources_Livestock,ListDatasets_Livestock)
+    ListSources_Livestock , ListDatasets_Livestock = MainExtractionLivestock(MarketCategories['Livestock'][:-2],dataset_path)
+    ListSources_Livestock_ChickenByProducts , ListDatasets_Livestock_ChickenByProducts = MainExtractionLivestock_ChickenByProducts(dataset_path)
+    Metadata_Livestock = CreateMetadataFromSources(ListSources_Livestock+ListSources_Livestock_ChickenByProducts,ListDatasets_Livestock+ListDatasets_Livestock_ChickenByProducts)
     DumpMetadata(Metadata_Livestock,dataset_path/'metadata_livestock.json')
     ListDatasets += ListDatasets_Livestock
+    ListDatasets += ListDatasets_Livestock_ChickenByProducts
 
     return ListDatasets
