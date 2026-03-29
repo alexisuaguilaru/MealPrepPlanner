@@ -1,11 +1,7 @@
 import asyncio
 from pathlib import Path
 
-from .InteractWithIFrames import MainInteraction
-from .ScrapeDataTable import MainScrapeTable
-from .ProcessTable import MainProcessJsonTable
-
-from .MainExtraction import MainExtractionAgricultural
+from .MainExtraction import MainExtractionAgricultural , MainExtractionLivestock
 
 from ...Utils import DumpMetadata , CreateMetadataFromSources
 
@@ -24,12 +20,12 @@ def MainDatasetETL():
         ],
 
         'Livestock': [
-            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenPec.asp?var=Bov',
-            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenPec.asp?var=Bec',
-            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenPec.asp?var=Por',
-            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenPec.asp?var=Cap',
+            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/e_SelPie.asp?var=Bov',
+            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/e_SelCan.asp?var=Bec',
+            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/e_SelCon.asp?var=Por',
+            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/e_SelCan.asp?var=Cap',
             'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenPec.asp?var=Ovi',
-            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenAve.asp',
+            'https://www.economia-sniim.gob.mx/SNIIM-Pecuarios-Nacionales/MenAve.asp', # Consolidado Semanal, Huevo (Mich), últimos 7 días
         ],
 
         'Fishing': [
@@ -44,10 +40,14 @@ def MainDatasetETL():
 
     ListDatasets = []
 
-    ListDatasets_Agricultural = MainExtractionAgricultural(MarketCategories['Agricultural'],dataset_path)
-    Metadata_Agricultural = CreateMetadataFromSources(MarketCategories['Agricultural'],ListDatasets_Agricultural)
-    DumpMetadata(Metadata_Agricultural,dataset_path/'metadata_agricultural.json')
+    # ListDatasets_Agricultural = MainExtractionAgricultural(MarketCategories['Agricultural'],dataset_path)
+    # Metadata_Agricultural = CreateMetadataFromSources(MarketCategories['Agricultural'],ListDatasets_Agricultural)
+    # DumpMetadata(Metadata_Agricultural,dataset_path/'metadata_agricultural.json')
+    # ListDatasets += ListDatasets_Agricultural
 
-    ListDatasets += ListDatasets_Agricultural
+    ListSources_Livestock , ListDatasets_Livestock = MainExtractionLivestock(MarketCategories['Livestock'][:-1],dataset_path)
+    Metadata_Livestock = CreateMetadataFromSources(ListSources_Livestock,ListDatasets_Livestock)
+    DumpMetadata(Metadata_Livestock,dataset_path/'metadata_livestock.json')
+    ListDatasets += ListDatasets_Livestock
 
     return ListDatasets
