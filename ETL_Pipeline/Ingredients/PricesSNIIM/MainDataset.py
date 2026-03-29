@@ -5,6 +5,10 @@ from .InteractWithIFrames import MainInteraction
 from .ScrapeDataTable import MainScrapeTable
 from .ProcessTable import MainProcessJsonTable
 
+from .MainExtraction import MainExtractionAgricultural
+
+from ...Utils import DumpMetadata , CreateMetadataFromSources
+
 def MainDatasetETL():
     DatasetPath = './Datasets/IngredientsPrices/SNIIM'
     dataset_path = Path(DatasetPath)
@@ -39,14 +43,11 @@ def MainDatasetETL():
     }
 
     ListDatasets = []
-    for page_link_Agricultural in MarketCategories['Agricultural']:
-        html_table_Agricultural = asyncio.run(MainInteraction(page_link_Agricultural))
-        json_table_Agricultural = asyncio.run(MainScrapeTable(html_table_Agricultural))
-        table_Agricultural = MainProcessJsonTable(json_table_Agricultural)
-        
-        table_name_Agricultural = page_link_Agricultural.split('/')[-1][:-5]
-        ListDatasets.append(dataset_path/f'{table_name_Agricultural}.csv')
 
-        table_Agricultural.to_csv(ListDatasets[-1])
+    ListDatasets_Agricultural = MainExtractionAgricultural(MarketCategories['Agricultural'],dataset_path)
+    Metadata_Agricultural = CreateMetadataFromSources(MarketCategories['Agricultural'],ListDatasets_Agricultural)
+    DumpMetadata(Metadata_Agricultural,dataset_path/'metadata_agricultural.json')
+
+    ListDatasets += ListDatasets_Agricultural
 
     return ListDatasets
