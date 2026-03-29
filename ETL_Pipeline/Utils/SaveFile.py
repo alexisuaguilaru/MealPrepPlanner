@@ -9,3 +9,7 @@ def SaveCleanRecipeInfo(RecipeInfo,RecipesPath):
         json.dump(RecipeInfo,file_json,ensure_ascii=False,indent=4)
         
     return path_json
+
+def SaveMarkdownFile(MarkdownContent,FilePath):
+    with open(FilePath,'w',encoding='utf-8') as markdown_file:
+        markdown_file.write(MarkdownContent)

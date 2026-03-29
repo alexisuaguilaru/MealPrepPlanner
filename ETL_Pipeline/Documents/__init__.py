@@ -1,0 +1,1 @@
+from .WHO import MainScraping as MainWHO
