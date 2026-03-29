@@ -4,4 +4,6 @@ __pycache__
 *.csv
 *.xlsx
 *.json
+*.pdf
+*.md
 .SessionsCrawlData

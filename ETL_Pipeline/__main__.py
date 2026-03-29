@@ -1,7 +1,10 @@
 import asyncio
 import logging
 
-from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO , MainDatasetPricesSNIIM , MainAllrecipes , MainKiwilimon , MainEatRight , MainWHO
+from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO , MainDatasetPricesSNIIM 
+from ETL_Pipeline import MainAllrecipes , MainKiwilimon , MainEatRight
+from ETL_Pipeline import  MainWHO , MainINSP
+
 from .Logger import ColorFormatter
 
 _logger = logging.getLogger(' WEB SCRAPING ')
@@ -44,8 +47,12 @@ if __name__ == '__main__':
     # list(recipes_eatright)
 
     _logger.info('Start Web Scraping of Pages from WHO')
-    documents_who = MainWHO()
-    list(documents_who)
+    # documents_who = MainWHO()
+    # list(documents_who)
+
+    _logger.info('Start Downloading of Files from INSP')
+    documents_insp = MainINSP()
+    list(documents_insp)
 
     _logger.info('No issues found')
     _logger.info('End Web Scraping')
