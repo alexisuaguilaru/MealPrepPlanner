@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 
-from .MainExtraction import MainExtractionAgricultural , MainExtractionLivestock , MainExtractionLivestock_ChickenByProducts
+from .MainExtraction import MainExtractionAgricultural , MainExtractionLivestock , MainExtractionLivestock_ChickenByProducts , MainExtractionFishing
 
 from ...Utils import DumpMetadata , CreateMetadataFromSources
 
@@ -39,10 +39,10 @@ def MainDatasetETL():
 
     ListDatasets = []
 
-    # ListDatasets_Agricultural = MainExtractionAgricultural(MarketCategories['Agricultural'],dataset_path)
-    # Metadata_Agricultural = CreateMetadataFromSources(MarketCategories['Agricultural'],ListDatasets_Agricultural)
-    # DumpMetadata(Metadata_Agricultural,dataset_path/'metadata_agricultural.json')
-    # ListDatasets += ListDatasets_Agricultural
+    ListDatasets_Agricultural = MainExtractionAgricultural(MarketCategories['Agricultural'],dataset_path)
+    Metadata_Agricultural = CreateMetadataFromSources(MarketCategories['Agricultural'],ListDatasets_Agricultural)
+    DumpMetadata(Metadata_Agricultural,dataset_path/'metadata_agricultural.json')
+    ListDatasets += ListDatasets_Agricultural
 
     ListSources_Livestock , ListDatasets_Livestock = MainExtractionLivestock(MarketCategories['Livestock'][:-2],dataset_path)
     ListSources_Livestock_ChickenByProducts , ListDatasets_Livestock_ChickenByProducts = MainExtractionLivestock_ChickenByProducts(dataset_path)
@@ -50,5 +50,11 @@ def MainDatasetETL():
     DumpMetadata(Metadata_Livestock,dataset_path/'metadata_livestock.json')
     ListDatasets += ListDatasets_Livestock
     ListDatasets += ListDatasets_Livestock_ChickenByProducts
+
+    TableNamesFishing = ['PM','CL','MO','PAD','FIL','LAT']
+    ListDatasets_Fishing = MainExtractionFishing(MarketCategories['Fishing'],TableNamesFishing,dataset_path)
+    Metadata_Fishing = CreateMetadataFromSources(MarketCategories['Fishing'],ListDatasets_Fishing)
+    DumpMetadata(Metadata_Fishing,dataset_path/'metadata_fishing.json')
+    ListDatasets += ListDatasets_Fishing
 
     return ListDatasets

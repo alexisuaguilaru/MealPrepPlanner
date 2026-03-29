@@ -148,6 +148,56 @@ async def MainInteractionLivestock_Chicken(PageLink):
 
         await asyncio.sleep(random.uniform(2, 5))
         return json.loads(result.extracted_content)
+    
+async def MainInteractionFishing(PageLink):
+    InteractionCode = """
+    ( async () => {
+        const select_start_btn = document.querySelector("select[name='dia1']");
+        const value_start_option = select_start_btn.querySelector("option[value='01']");
+        value_start_option.setAttribute('selected',true);
+
+        const select_results_btn = document.querySelector("select[name='RegPag']");
+        const value_results_option = select_results_btn.querySelector("option[value='1000']");
+        value_results_option.setAttribute('selected',true);
+
+        const btn_submit = document.querySelector("input[value='Buscar']");
+        btn_submit.click();
+
+        await new Promise(r => setTimeout(r, 2000));
+    })();
+    """
+
+    ExtractionSchema = {
+        'name': 'List of Tables',
+        'baseSelector': "table[border='1']",
+        'fields': [
+            {'name': 'Table Data', 'selector': 'tr', 'type': 'nested_list', 'fields': [
+                {'name': 'row', 'selector': 'td', 'type': 'list', 'fields': [
+                    {'name': 'entry', 'type': 'text'},
+                ]},
+            ]},
+        ],
+    }
+
+    Browser = BrowserConfig(
+        **BasicBrowserConfig,
+    )
+
+    CrawlerConfig = CrawlerRunConfig(
+        extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
+        js_code = InteractionCode,
+        **BasicCrawlerRunConfig,
+        capture_console_messages = True,
+    )
+
+    async with AsyncWebCrawler(config=Browser) as crawler:
+        result: CrawlResult  = await crawler.arun(
+            url = PageLink,
+            config = CrawlerConfig,
+        )
+
+        await asyncio.sleep(random.uniform(2, 5))
+        return json.loads(result.extracted_content)[0]
                 
 async def ExtractTableHTMLFromMessages(ResultScrape):
     if ResultScrape.console_messages:

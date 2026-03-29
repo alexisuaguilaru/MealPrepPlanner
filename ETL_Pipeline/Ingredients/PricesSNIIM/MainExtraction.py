@@ -1,6 +1,6 @@
 import asyncio
 
-from .InteractWithIFrames import MainInteractionAgricultural , MainInteractionLivestock , MainInteractionLivestock_Chicken
+from .InteractWithIFrames import MainInteractionAgricultural , MainInteractionLivestock , MainInteractionLivestock_Chicken , MainInteractionFishing
 from .ScrapeDataTable import MainScrapeTable
 from .ProcessTable import MainProcessJsonTable
 
@@ -70,3 +70,15 @@ def MainExtractionLivestock_ChickenByProducts(DatasetPath):
             table_Eggs.to_csv(DatasetPath/ListDatasets[-1])
 
     return ListSources , ListDatasets
+
+def MainExtractionFishing(LinkPagesFishing,TableNamesFishing,DatasetPath):
+    ListDatasets = []
+    for page_link_Fishing , table_name_Fishing in zip(LinkPagesFishing,TableNamesFishing):
+        json_table_Fishing = asyncio.run(MainInteractionFishing(page_link_Fishing))
+        table_Fishing = MainProcessJsonTable(json_table_Fishing['Table Data'])
+
+        ListDatasets.append(f'Consulta{table_name_Fishing}.csv')
+
+        table_Fishing.to_csv(DatasetPath/ListDatasets[-1])
+
+    return ListDatasets
