@@ -3,7 +3,7 @@ import logging
 
 from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO , MainDatasetPricesSNIIM 
 from ETL_Pipeline import MainAllrecipes , MainKiwilimon , MainEatRight
-from ETL_Pipeline import  MainWHO , MainINSP
+from ETL_Pipeline import  MainWHO , MainINSP , MainSEP
 
 from .Logger import ColorFormatter
 
@@ -51,8 +51,12 @@ if __name__ == '__main__':
     # list(documents_who)
 
     _logger.info('Start Downloading of Files from INSP')
-    documents_insp = MainINSP()
-    list(documents_insp)
+    # documents_insp = MainINSP()
+    # list(documents_insp)
+
+    _logger.info('Start Downloading of Files from SEP')
+    documents_sep = MainSEP()
+    list(documents_sep)
 
     _logger.info('No issues found')
     _logger.info('End Web Scraping')
