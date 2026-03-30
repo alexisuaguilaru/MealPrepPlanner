@@ -3,7 +3,7 @@ import logging
 
 from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO , MainDatasetPricesSNIIM 
 from ETL_Pipeline import MainAllrecipes , MainKiwilimon , MainEatRight
-from ETL_Pipeline import  MainWHO , MainINSP , MainSEP , MainDocumentsEatRight
+from ETL_Pipeline import  MainWHO , MainINSP , MainSEP , MainDocumentsEatRight , MainLarousse
 
 from .Logger import ColorFormatter
 
@@ -61,6 +61,10 @@ if __name__ == '__main__':
     _logger.info('Start Web Scraping of Pages from EatRight')
     documents_eatright = MainDocumentsEatRight(2,2)
     list(documents_eatright)
+
+    _logger.info('Start Web Scraping of Pages from Larousse')
+    documents_larousse = MainLarousse(2)
+    list(documents_larousse)
 
     _logger.info('No issues found')
     _logger.info('End Web Scraping')

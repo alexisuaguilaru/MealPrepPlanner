@@ -9,15 +9,16 @@ BasicBrowserConfig = dict(
     headless = HEADLESS,
     user_agent_mode = 'random',
     enable_stealth = True,
-    extra_args = ["--disable-blink-features=AutomationControlled"],
+    extra_args = ['--disable-blink-features=AutomationControlled'],
     use_persistent_context = True,
     user_data_dir = UserDataFile,
 )
+
 BasicBrowserConfig_NoPersistentContext = dict(
     headless = HEADLESS,
     user_agent_mode = 'random',
     enable_stealth = True,
-    extra_args = ["--disable-blink-features=AutomationControlled"],
+    extra_args = ['--disable-blink-features=AutomationControlled'],
 )
 
 BasicCrawlerRunConfig = dict(
