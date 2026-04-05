@@ -28,12 +28,15 @@ def CleanTime(Recipe):
     return f'{time_hours} hrs {times_minutes} mins'
 
 def CleanServings(Recipe: dict):
-    raw_servings = re.sub(r'<.*?>','',Recipe['Servings Nutritional Facts'])
-    servings = re.search(r'[Ss]erv(ing|e)s?:?\s?(\d+)',raw_servings).group(2)
-    return int(servings) 
+    try:
+        raw_servings = re.sub(r'<.*?>','',Recipe['Servings Nutritional Facts'])
+        servings = re.search(r'[Ss]erv(ing|e)s?:?\s*?(\d+)',raw_servings).group(2)
+        return int(servings)
+    except:
+        return 1
 
 def CleanIngredients(Recipe: dict):
-    raw_ingredients = Recipe['Ingredientes']
+    raw_ingredients = Recipe['Ingredients']
     ingredients = re.sub(r'</?p>','',raw_ingredients)
     
     list_ingredients = ingredients.split('<br/>\n')
@@ -80,8 +83,11 @@ def CleanNutritionalFacts(Recipe):
 def ProcessedIngredient(Ingredient: str):
     preprocessed_ingredients = ''
     for letter in Ingredient:
-        if not letter.isascii(): 
-            preprocessed_ingredients += f' {numeric(letter):.2f}'
+        if not letter.isascii():
+            try:
+                preprocessed_ingredients += f' {numeric(letter):.2f}'
+            except:
+                preprocessed_ingredients += letter
         else:
             preprocessed_ingredients += letter
 

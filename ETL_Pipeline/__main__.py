@@ -35,16 +35,16 @@ if __name__ == '__main__':
     # list(ingredients_sniim)
 
     _logger.info('Start Web Scraping of Recipes from Allrecipes')
-    recipes_allrecipes = MainAllrecipes()
-    list(recipes_allrecipes)
+    # recipes_allrecipes = MainAllrecipes()
+    # list(recipes_allrecipes)
 
     _logger.info('Start Web Scraping of Recipes from Kiwilimon')
     # recipes_kiwlimon = MainKiwilimon(5)
     # list(recipes_kiwlimon)
 
     _logger.info('Start Web Scraping of Recipes from EatRight')
-    # recipes_eatright = MainEatRight()
-    # list(recipes_eatright)
+    recipes_eatright = MainEatRight()
+    list(recipes_eatright)
 
     _logger.info('Start Web Scraping of Pages from WHO')
     # documents_who = MainWHO()

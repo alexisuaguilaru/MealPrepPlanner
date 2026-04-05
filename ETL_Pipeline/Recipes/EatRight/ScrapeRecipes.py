@@ -1,11 +1,13 @@
 import asyncio
 import random
 import json
-from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy , CacheMode
 
 from ...Utils import BasicBrowserConfig , BasicCrawlerRunConfig
 
 async def MainScrapeRecipesMealtime(MealtimeLink: str):
+    SessionID = 'Scrape_Mealtimes_EatRight'
+    
     ExtractionSchema = {
         'name': 'List of Recipes from Mealtime',
         'baseSelector': 'div.article-listing__container article.card.card--clickable',
@@ -20,11 +22,12 @@ async def MainScrapeRecipesMealtime(MealtimeLink: str):
         **BasicBrowserConfig,
     )
 
-    CrawlerConfig_EatRight = BasicCrawlerRunConfig.copy()
-    del CrawlerConfig_EatRight['wait_until']
     CrawlerConfig = CrawlerRunConfig(
         extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
-        **CrawlerConfig_EatRight,
+        session_id = SessionID,
+        delay_before_return_html = random.uniform(3,5),
+        scroll_delay = random.uniform(0.5,1),
+        cache_mode = CacheMode.ENABLED,
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:
