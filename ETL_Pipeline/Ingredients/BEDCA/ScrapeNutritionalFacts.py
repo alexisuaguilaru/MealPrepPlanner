@@ -48,5 +48,5 @@ async def MainScrapeIngredientNutritionalFacts(IngredientID: str):
             config = CrawlerConfig,
         )
     
-    await asyncio.sleep(random.uniform(2, 5))
+    await asyncio.sleep(random.uniform(1,3))
     return json.loads(result.extracted_content)

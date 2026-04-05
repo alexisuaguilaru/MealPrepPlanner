@@ -6,12 +6,16 @@ from .ScrapeNutritionalFacts import MainScrapeIngredientNutritionalFacts
 from .CleanIngredientInfo import CleanNutritionalFacts
 from .SaveIngredient import SaveCleanIngredient
 
+from ...Utils import ResumeDownloading
+
 def MainScraping():
     DatasetPath = Path('Datasets/IngredientsNutritional/BEDCA/')
     DatasetPath.mkdir(parents=True,exist_ok=True)
 
+    TotalIngredients , LastIngredient = ResumeDownloading(DatasetPath)
+    print(TotalIngredients,LastIngredient)
     Ingredients = asyncio.run(MainScrapeIngredients())
-    for ingredient in Ingredients[:10]:
+    for ingredient in Ingredients[TotalIngredients:]:
         clean_ingredient_info = {
             'Spanish Name': ingredient['Spanish Name'],
             'English Name': ingredient['English Name'],

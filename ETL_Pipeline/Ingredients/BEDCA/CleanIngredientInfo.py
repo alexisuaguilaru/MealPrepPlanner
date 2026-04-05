@@ -4,6 +4,7 @@ def CleanNutritionalFacts(NutritionalFacts: list[dict]):
     not_null_values = lambda nutrient: all(value != '' for value in nutrient.values())
     valid_nutrients = filter(not_null_values,NutritionalFacts)
 
+    clean_calories = 0
     clean_nutrients = []
     for nutrient in valid_nutrients:
         if nutrient['Nutrient'] == 'energía, total':
