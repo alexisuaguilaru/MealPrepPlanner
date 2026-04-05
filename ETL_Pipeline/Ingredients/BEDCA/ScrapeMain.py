@@ -13,7 +13,7 @@ def MainScraping():
     DatasetPath.mkdir(parents=True,exist_ok=True)
 
     TotalIngredients , LastIngredient = ResumeDownloading(DatasetPath)
-    print(TotalIngredients,LastIngredient)
+    
     Ingredients = asyncio.run(MainScrapeIngredients())
     for ingredient in Ingredients[TotalIngredients:]:
         clean_ingredient_info = {

@@ -114,5 +114,5 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
         result_NutritionalFacts,
         result_Images,
     ]
-    await asyncio.sleep(random.uniform(2, 5))
+    await asyncio.sleep(random.uniform(3,6))
     return [json.loads(result.extracted_content) for result in Results]

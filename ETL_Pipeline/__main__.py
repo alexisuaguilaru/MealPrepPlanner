@@ -21,8 +21,8 @@ if __name__ == '__main__':
     _logger.info('Start Web Scraping')
 
     _logger.info('Start Web Scraping of Ingredients from BEDCA')
-    ingredients_bedca = MainBEDCA()
-    list(ingredients_bedca)
+    # ingredients_bedca = MainBEDCA()
+    # list(ingredients_bedca)
 
     _logger.info('Start Web Scraping of Ingredients from INSP: BAM')
     # ingredients_insp = MainDatasetINSP()
@@ -35,8 +35,8 @@ if __name__ == '__main__':
     # list(ingredients_sniim)
 
     _logger.info('Start Web Scraping of Recipes from Allrecipes')
-    # recipes_allrecipes = MainAllrecipes()
-    # list(recipes_allrecipes)
+    recipes_allrecipes = MainAllrecipes()
+    list(recipes_allrecipes)
 
     _logger.info('Start Web Scraping of Recipes from Kiwilimon')
     # recipes_kiwlimon = MainKiwilimon(5)
