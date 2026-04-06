@@ -13,8 +13,6 @@ def MainScraping(NumClicks,MaxArticlesByTopic):
     base_path = Path(BasePath)
     base_path.mkdir(parents=True,exist_ok=True)
 
-    ListMetadata = []
-
     LinkPages = [
         'https://www.eatright.org/health/health-conditions',
         'https://www.eatright.org/health/wellness',
@@ -22,10 +20,15 @@ def MainScraping(NumClicks,MaxArticlesByTopic):
 
     BaseURL_EatRight = 'https://www.eatright.org'
 
+    MetadataPaths = []
     for link_page_EatRight in LinkPages:
+        ListMetadata = []
         list_topics = asyncio.run(MainScrapeListTopics(link_page_EatRight))
 
-        for topic in list_topics:
+        for topic in list_topics[:len(list_topics)//2]:
+            topic_path = base_path/(topic['Title'].title().replace(' ','').replace('/',''))
+            topic_path.mkdir(parents=True,exist_ok=True)
+
             list_links_articles = asyncio.run(MainScrapeListArticlesLinks(BaseURL_EatRight+topic['Link'],NumClicks))
             
             for link_article in list_links_articles[:MaxArticlesByTopic]: 
@@ -42,7 +45,9 @@ def MainScraping(NumClicks,MaxArticlesByTopic):
                 }
                 ListMetadata.append(metadata_article)
 
-                SaveMarkdownFile(scraped_content,base_path/metadata_article['File Name'])
+                SaveMarkdownFile(scraped_content,topic_path/metadata_article['File Name'])
 
-    DumpMetadata(ListMetadata,base_path/'metadata.json')
-    return ListMetadata
+            MetadataPaths.append(topic_path/'metadata.json')
+            DumpMetadata(ListMetadata,MetadataPaths[-1])
+
+    return MetadataPaths

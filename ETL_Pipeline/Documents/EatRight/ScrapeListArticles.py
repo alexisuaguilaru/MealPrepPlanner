@@ -1,6 +1,6 @@
 import asyncio
 import random
-from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , BrowserConfig , JsonCssExtractionStrategy
+from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , BrowserConfig , JsonCssExtractionStrategy , CacheMode
 import json
 
 from ...Utils import BasicCrawlerRunConfig , BasicBrowserConfig
@@ -49,6 +49,7 @@ async def MainScrapeListArticlesLinks(LinkTopic,NumClicks):
         **CrawlerRunConfig_EatRight,
         scan_full_page = True,
         max_scroll_steps = 2,
+        cache_mode = CacheMode.ENABLED,
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:
