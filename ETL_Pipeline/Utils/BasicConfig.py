@@ -4,7 +4,7 @@ import os
 ScriptDir = os.path.dirname(os.path.abspath(__file__))
 UserDataFile = os.path.join(ScriptDir,'.SessionsCrawlData')
 
-HEADLESS = True
+HEADLESS = False
 BasicBrowserConfig = dict(
     headless = HEADLESS,
     user_agent_mode = 'random',

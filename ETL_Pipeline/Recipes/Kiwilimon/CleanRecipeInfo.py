@@ -10,10 +10,11 @@ def CleanRecipe(Recipe: list[list[dict]]) -> dict:
     }
 
 def CleanTime(Recipe):
-    RecipeTimes = Recipe[0][0].values()
+    TimeTypes = ['Preparation Time','Cooking Time']
     time_hours = 0
     times_minutes = 0
-    for times in RecipeTimes:
+    for time_type in TimeTypes:
+        times = Recipe[time_type]
         time_hour = re.search(r'(\d+)hs?',times)
         time_mins = re.search(r'(\d+) ?mins?',times)
 
@@ -24,13 +25,13 @@ def CleanTime(Recipe):
 
 def CleanServingsIngredients(Recipe):
     clean_servings_ingredients = {}
-    clean_servings_ingredients['Servings'] = int(Recipe[1][0]['Servings'])
-    clean_servings_ingredients['Ingredients'] = list(map(ExtractIngredientInfo,Recipe[1][0]['Ingredients']))
+    clean_servings_ingredients['Servings'] = int(Recipe['Servings'])
+    clean_servings_ingredients['Ingredients'] = list(map(ExtractIngredientInfo,Recipe['Ingredients']))
 
     return clean_servings_ingredients
 
 def CleanInstructions(Recipe):
-    return [step['step'] for step in Recipe[2][0]['Steps']]
+    return [step['step'] for step in Recipe['Steps']]
 
 def ExtractIngredientInfo(Ingredient):
     ingredient_info = Ingredient['ingredient']

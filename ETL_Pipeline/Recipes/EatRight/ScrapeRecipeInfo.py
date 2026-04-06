@@ -9,7 +9,7 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
     SessionID = 'Scrape_Mealtimes_EatRight'
 
     ExtractionSchema = {
-        'name': 'List of Mealtimes',
+        'name': 'Recipe information',
         'baseSelector': "//section[contains(@class,'rtf')]",
         'fields': [
             {'name': 'Times', 'selector': ".//p[contains(text(),'minute') or contains(text(), 'hour')]", 'type': 'text', 'default': '0 minutes'},

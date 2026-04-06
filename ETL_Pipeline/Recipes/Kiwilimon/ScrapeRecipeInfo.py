@@ -1,40 +1,22 @@
 import asyncio
 import random
 import json
-from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy , CacheMode
 
 from ...Utils import BasicBrowserConfig , BasicCrawlerRunConfig
 
 async def MainScrapeRecipeInformation(RecipeLink: str):
     SessionID = 'Session_RecipeInformation_Kiwilimon'
 
-    ExtractionSchema_Times = {
-        'name': 'Recipe Information about Times',
-        'baseSelector': 'div.recipe-area-info-receta',
+    ExtractionSchema = {
+        'name': 'Recipe information',
+        'baseSelector': 'body',
         'fields': [
-            {'name': 'Preparation Time', 'selector': 'div.icon-k7-receta-tpreparacion', 'type': 'text', 'default': '0 mins'},
-            {'name': 'Cooking Time', 'selector': 'div.icon-k7-receta-tcocinar', 'type': 'text', 'default': '0 mins'},
-        ]
-    }
-
-    ExtractionSchema_ServingsIngredients = {
-        'name': 'Recipe Information about Servings and Ingredients',
-        'baseSelector': 'div.recipe-intro-receta-normal',
-        'fields': [
-            {'name': 'Servings', 'selector': 'div.recipe-area-titulo-ingredientes-recnormal span', 'type': 'text', 'default': '1'},
-            {'name': 'Ingredients', 'selector': 'div#ingredients-original label', 'type': 'list', 'fields':[
-                {'name': 'ingredient', 'type': 'text'},
-            ]},
-        ]
-    }
-
-    ExtractionSchema_Directions = {
-        'name': 'Recipe Information about Directions',
-        'baseSelector': 'div.recipe-intro-data-pasos-normal',
-        'fields': [
-            {'name': 'Steps', 'selector': 'label', 'type': 'list', 'fields':[
-                {'name': 'step', 'type': 'text'},
-            ]}
+            {'name': 'Preparation Time', 'selector': 'div.recipe-area-info-receta div.icon-k7-receta-tpreparacion', 'type': 'text', 'default': '0 mins'},
+            {'name': 'Cooking Time', 'selector': 'div.recipe-area-info-receta div.icon-k7-receta-tcocinar', 'type': 'text', 'default': '0 mins'},
+            {'name': 'Servings', 'selector': 'div.recipe-intro-receta-normal div.recipe-area-titulo-ingredientes-recnormal span', 'type': 'text', 'default': '1'},
+            {'name': 'Ingredients', 'selector': 'div#ingredients-original label', 'type': 'list', 'fields': [{'name': 'ingredient', 'type': 'text'}]},
+            {'name': 'Steps', 'selector': 'div.recipe-intro-data-pasos-normal label', 'type': 'list', 'fields': [{'name': 'step', 'type': 'text'}]}
         ]
     }
 
@@ -48,34 +30,20 @@ async def MainScrapeRecipeInformation(RecipeLink: str):
     CrawlerRunConfig_RecipeInfo = BasicCrawlerRunConfig.copy()
     del CrawlerRunConfig_RecipeInfo['wait_until']
     CrawlerConfig_RecipeInfo = CrawlerRunConfig(
-        **CrawlerRunConfig_RecipeInfo,
+        extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
         session_id = SessionID,
+        **CrawlerRunConfig_RecipeInfo,
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:
 
-        CrawlerConfig_RecipeInfo.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_Times)
-        result_Times: CrawlResult  = await crawler.arun(
+        result: CrawlResult = await crawler.arun(
             url = RecipeLink,
             config = CrawlerConfig_RecipeInfo,
         )
 
-        CrawlerConfig_RecipeInfo.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_ServingsIngredients)
-        result_ServingsIngredients: CrawlResult  = await crawler.arun(
-            url = RecipeLink,
-            config = CrawlerConfig_RecipeInfo,
-        )
-
-        CrawlerConfig_RecipeInfo.extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema_Directions)
-        result_Directions: CrawlResult  = await crawler.arun(
-            url = RecipeLink,
-            config = CrawlerConfig_RecipeInfo,
-        )
-
-    Results = [
-        result_Times,
-        result_ServingsIngredients,
-        result_Directions,
-    ]
-    await asyncio.sleep(random.uniform(2, 5))
-    return [json.loads(result.extracted_content) for result in Results]
+        await asyncio.sleep(random.uniform(3,5))
+        try:
+            return json.loads(result.extracted_content)[0]
+        except:
+            return {}

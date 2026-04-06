@@ -1,7 +1,7 @@
 import asyncio
 import random
 import json
-from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy
+from crawl4ai import AsyncWebCrawler , BrowserConfig , CrawlerRunConfig , CrawlResult , JsonCssExtractionStrategy , CacheMode
 
 from ...Utils import BasicBrowserConfig , BasicCrawlerRunConfig
 
@@ -48,6 +48,7 @@ async def MainScrapeRecipesFromPage(NumClicks: int):
         js_code = LoadMoreRecipes,
         scan_full_page = True,
         max_scroll_steps = 5,
+        cache_mode = CacheMode.ENABLED,
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:
@@ -56,5 +57,5 @@ async def MainScrapeRecipesFromPage(NumClicks: int):
             config = CrawlerConfig,
         )
 
-    await asyncio.sleep(random.uniform(2, 5))   
+    await asyncio.sleep(random.uniform(2,5))   
     return json.loads(result.extracted_content)
