@@ -1,268 +1,73 @@
 # ETL Pipelines <!-- omit in toc -->
 
 ## Table of Contents <!-- omit in toc -->
-- [Data Sources](#data-sources)
-  - [Datos para SQL Database e Image Storage](#datos-para-sql-database-e-image-storage)
-  - [Documentos para (Graph)RAG y Vectorial Database](#documentos-para-graphrag-y-vectorial-database)
-- [Metadatos y Esquemas](#metadatos-y-esquemas)
-  - [Recetas](#recetas)
-  - [Ingrediente](#ingrediente)
-  - [Imágenes](#imágenes)
-  - [Textos Médicos y Nutricionales](#textos-médicos-y-nutricionales)
-- [Almacenamiento y Organización de los Datos](#almacenamiento-y-organización-de-los-datos)
-  - [Almacenamiento](#almacenamiento)
-  - [Organización](#organización)
-- [Pipelines](#pipelines)
-  - [Pipeline para BEDCA](#pipeline-para-bedca)
-  - [Pipeline para PROFECO](#pipeline-para-profeco)
-  - [Pipeline para Allrecipes](#pipeline-para-allrecipes)
+- [Data Architecture](#data-architecture)
+- [Recipes and Ingredients Database](#recipes-and-ingredients-database)
+  - [Data Sources and Acquisition](#data-sources-and-acquisition)
+  - [Nutritional and Cost Imputation](#nutritional-and-cost-imputation)
+  - [Entity Resolution](#entity-resolution)
+  - [Persistence and Storage](#persistence-and-storage)
+- [Documents Database](#documents-database)
+  - [Data Acquisition](#data-acquisition)
+  - [Embedding Representation](#embedding-representation)
+  - [Persistence and Vector Storage](#persistence-and-vector-storage)
+- [References](#references)
 
-## Data Sources
-Fuentes de datos para cada tipo de base de datos que se van a poblar a lo largo del proyecto. Se tiene contemplado lo siguiente:
-* Una base de datos SQL para almacenar las diferentes recetas y sus datos relacionados (instrucciones, ingredientes, valores nutricionales, precio) con el fin de que sea consultada por medio de la IA usando MCP y para desplegar las recetas en un buscador. Por los objetivos adicionales del proyecto, es necesario consolidar entidades al momento de relacionar los ingredientes de las recetas con sus valores nutricionales.
-* Un almacenamiento basado en objetos para preservar las imágenes ilustrativas de las recetas extraídas.
-* Una base de datos vectorial para almacenar los documentos de las recetas con el fin de que el modelo de IA pueda entender y comprender qué recetas son más convenientes recomendar para crear el menú semanal
+## Data Architecture
+The system's core relies on the **ingestion and processing of three primary data streams**: culinary **preparations**, **ingredient** metadata, and specialized **nutritional literature**. Our ETL pipelines handle the transition from raw sources to **production-ready data**:
+* **Structured Data**: Ingredient information is ingested from tabular formats and transformed into relational schemas.
+* **Unstructured Data**: Recipes and technical documents (originally in plain text) are processed and converted into vector representations (embeddings) to capture semantic context.
 
-### Datos para SQL Database e Image Storage
-De las siguientes fuentes se van a extraer: Datos estadísticos (valores nutricionales, precios), Textos (instrucciones de preparación, ingredientes), Imágenes (cómo se ven las recetas)
-* [Allrecipes: Mexican Cuisine](https://www.allrecipes.com/recipes/728/world-cuisine/latin-american/mexican/)
-    - Recetas con inspiración y "toques" mexicanos
-    - Extraer todos las recetas y su información relevante de ingredientes, instrucciones, tiempo de preparación y sus aportes nutricionales
-* [Kiwilimon: Recetas](https://www.kiwilimon.com/recetas)
-    - Recetas tradicionales y de inspiración regionales
-    - Extraer recetas de ciertas categorías y su información relevante de ingredientes, instrucciones y tiempo de preparación
-    - No cuentan con aportes nutricionales, por lo que es necesario generar sus aportes nutricionales
-* [EatRight: Recipes](https://www.eatright.org/recipes)
-    - Recetas internacionales con orientación nutricional y realizadas por expertos
-    - Extraer todas las recetas y su información relevantes de ingredientes, para hacerlas y sus aportes nutricionales
-* [Base de Datos BEDCA](https://www.bedca.net/bdpub/index.php)
-    - Base de datos con la composición y aportes nutricionales (nutrientes, calorías) de algunos alimentos e ingredientes
-    - Extraer todos los ingredientes junto con sus aportes nutricionales relevantes
-* [INSP: Base de Alimentos de México](https://insp.mx/informacion-relevante/bam-bienvenida)
-    - Base de datos con la composición y aportes nutricionales de algunos alimentos e ingredientes comunes de la cocina mexicana
-    - Procesar y limpiar las entradas de los alimentos e ingredientes
-* [PROFECO: Quién es Quién en los Precios](https://qqp.profeco.gob.mx/)
-    - Repositorio de precios de productos e ingredientes ofertados en supermercados
-    - Extraer el precio de los ingredientes de interés
-    - Datos abiertos del programa que contiene toda la base de datos/productos en todos los estados: https://www.datos.gob.mx/dataset/?q=quién+es+quién
-* [Sistema Nacional de Información e Integración de Mercados (SNIIM)](https://www.economia-sniim.gob.mx/)
-    - Repositorio de precios de productos e ingredientes ofertados en mercados y centrales de abastos
-    - Extraer el precio de ingredientes frescos de interés
+To manage this **hybrid requirement** (relational + vector data), we evaluated a multi-engine architecture combining PostgreSQL  (PostgreSQL Development Team, 2026) for relational storage and Qdrant (Qdrant Team, 2026) for vector indexing. However, to optimize the **development of the MVP**, we selected **Supabase** (Supabase, 2026) as the centralized **database management system**. This choice provides several strategic advantages:
+* **Unified Environment**: Enables the coexistence of tabular and vector data within a single ecosystem.
+* **Architectural Simplicity**: Reduces infrastructure overhead by eliminating the need for separate database providers.
+* **Scalability**: Ensures a robust foundation that supports both standard relational queries and advanced similarity searches without compromising system performance.
 
-### Documentos para (Graph)RAG y Vectorial Database
-De las siguientes fuentes se van a extraer: Textos y Documentos (relacionados sobre salud, nutrición, dietas y wellness)
-* [WHO Fact Sheet](https://www.who.int/news-room/fact-sheets)
-    - Extraer textos relevantes sobre alimentación, dietas, salud alimentaria y manejo de alimentos
-    * [Healthy diet](https://www.who.int/news-room/fact-sheets/detail/healthy-diet)
-    * [Food safety](https://www.who.int/news-room/fact-sheets/detail/food-safety)
-    * [Malnutrition](https://www.who.int/news-room/fact-sheets/detail/malnutrition)
-    * [Obesity and overweight](https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight)
-* [INSP (Instituto Nacional de Salud Pública, México)](https://insp.mx/) y Gobierno de México:
-    - Extraer texto de las guías de alimentación para la población mexicana
-    * [Guías Alimentarias y de Actividad Física](https://www.insp.mx/images/stories/2015/Noticias/Nutricion_y_Salud/Docs/151118_guias_alimentarias.pdf)
-    * [Guías Alimentarias Saludables y Sostenibles para la Población Mexicana](https://www.gob.mx/cms/uploads/attachment/file/1029510/Guias_Alimentarias_Mexico_2025.pdf)
-* [EatRight: Health](https://www.eatright.org/health)
-    - Extraer textos relacionados al cuidado personal (wellness) y sobre nutrición en las condiciones de salud
-* [Larousse Cocina: Técnicas](https://laroussecocina.mx/tecnicas/)
-    - Extraer información sobre algunas técnicas y formas de preparación
-* [SEP](https://www.gob.mx/sep):
-    - Extraer textos relevantes sobre cómo es la alimentación ideal en las escuelas
-    * [Recomendaciones para una Alimentación Saludable](https://educacionbasica.sep.gob.mx/multimedia/RSC/BASICA/Documento/201611/201611-3-RSC-l100yBJI2X-alimentacion_saludable.pdf)
-    * [Servicio de Alimentación: Guía 2025](https://laescuelaesnuestra.sep.gob.mx/storage/recursos/material_consulta/GUIAS_2025/qPdyVcOLpc-20250127_GUIA_ALIMENTACION_V8.pdf)
+## Recipes and Ingredients Database
 
-## Metadatos y Esquemas
-Para cada objeto abstracto/relevante para las bases de datos, se definen sus esquemas de metadatos:
+### Data Sources and Acquisition
+We aggregate recipes from **three primary pillars** to ensure a heterogeneous database that **balances regional tradition with international nutritional standards**:
+* [Allrecipes: Mexican Cuisine](https://www.allrecipes.com/recipes/728/world-cuisine/latin-american/mexican/): For national-international fusion.
+* [Kiwilimon: Te Cuida](https://www.kiwilimon.com/te-cuida): For regional gastronomy and dietary focus.
+* [EatRight: Recipes](https://www.eatright.org/recipes): For specialized nutritional guidelines.
 
-### Recetas
-* Formato de Archivo:
-    - `.sql` (Debido a que estos valores están en una base de datos SQL)
-* Atributos:
-    - Nombre de la Receta
-      - *String*
-      - Nombre completo o referente a la receta
-    - Tiempo Total de Preparación
-      - Valores enteros positivos 
-      - Tiempo en minutos requerido para elaborar el platillo, este tiempo incluye los tiempos como de cocción o de horneado
-    - Porciones
-      - Valores enteros positivos
-      - Número de porciones o raciones por preparación
-    - Ingredientes
-      - Lista de ingredientes
-      - Nombre
-        - *String* 
-        - Nombre del ingrediente necesario para preparar la receta
-      - Cantidad
-        - Número flotante
-        - Cantidad del ingrediente para preparar la receta
-      - Unidades de Medida
-        - *String*
-        - Unidad para medir la cantidad de un ingrediente
-    - Instrucciones
-      - Lista de *strings*
-      - Pasos detallados para elaborar la receta 
-    - Calorías Totales
-      - Número flotante
-      - El total de aporte energético de una porción de la receta 
-    - Nutrientes
-      - Lista de los aportes nutricionales
-      - Nombre
-        - *String*
-        - Nombre representativo del nutriente presente en una receta
-      - Cantidad
-        - Número flotante
-        - Cantidad del nutrientes presente en la receta
-    - Precio por Porción
-      - Valores flotantes positivos
-      - Precio (costo) estimado de cada porción
-    - Origen
-      - *String*
-      - Fuente URL de la que proviene la receta
-    - Imágenes Ilustrativas
-      - Lista de *String*
-      - Referencias URI a la ubicaciones en la Image DB de las imágenes de cómo se ve la receta servida o terminada de preparar
-* Fecha de Extracción:
-    - Fecha en la que se recuperó la receta
-* Versión:
-    - Número/representación de la versión en la DB
+We utilize **Crawl4AI** (Crawl4AI Contributors, 2026) to automate **web scraping** and preliminary **structuring of unstructured content**. The resulting raw data is then **cleaned and normalized** via Python to ensure metadata consistency.
 
-### Ingrediente
-* Formato de Archivo:
-    - `.sql` (Debido a que estos valores están en una base de datos SQL)
-* Atributos:
-    - Nombre del Ingrediente en Español:
-      - *String*
-      - Nombre completo de un ingrediente en español
-    - Nombre del Ingrediente en Inglés:
-      - *String*
-      - Nombre completo de un ingrediente en inglés
-    - Calorías
-      - Número flotante
-      - Aporte energético en 100gr del ingrediente
-    - Nutrientes
-      - Nombre de Nutrientes
-        - Lista de *String*
-        - Nombre representativo de los macronutrientes y micronutrientes presentes en el ingrediente
-      - Cantidad de Nutrientes
-        - Lista de números flotantes
-        - Cantidad de cada uno de los nutrientes presentes en 100gr del ingrediente
-      - Unidad de Medición
-        - List de *strings*
-        - Unidad de medida (g, mg, ml) empleada para medir el nutriente
-    - Precio
-      - Valores flotantes positivos
-      - Precio (costo) de adquirir cierta medida del ingrediente
-    - Unidad de Medición
-      - *String*
-      - Unidad usada para determinar el precio
-* Fecha de Extracción:
-    - Fecha en la que se recuperó la receta
-* Versión:
-    - Número/representación de la versión en la DB
+### Nutritional and Cost Imputation
+To address missing nutritional metadata and provide accurate economic projections, the system implements a two-fold enrichment process:
+* **Nutritional Imputation**: Using ingredient-level analysis, we fill data gaps by cross-referencing the [Base de Datos Española de Composición de Alimentos (BEDCA)](https://www.bedca.net/) and the [Base de Alimentos de México del Instituto Nacional de Salud Pública (INSP)](https://insp.mx/informacion-relevante/bam-bienvenida).
+* **Cost Imputation**: To ensure accurate economic projections, the system integrates a multi-source market price layer. Supermarket supply data is sourced from [PROFECO](https://qqp.profeco.gob.mx/)'s "Quién es Quién en los Precios" program, while local market variability is captured via web scraping of the [Sistema Nacional de Información e Integración de Mercados (SNIIM)](https://www.economia-sniim.gob.mx/), specifically targeting the "Mercado Independencia" in Morelia, Michoacán. All financial data is indexed through unit-of-measure cost standardization to ensure consistency across the platform.
 
-### Imágenes
-* Formato de Imagen:
-    - Formato `.jpg`
-* Atributos:
-    - Identificador de Receta
-      - *String*
-      - ID de la receta en la SQL DB que se ilustra en la imagen
-    - Contenido
-      - Mapa de bits (colores)
-      - Representación de la imagen en sí como bits
-    - Origen
-      - *String*
-      - Fuente URL de la que proviene la imagen
-* Número de Imágenes:
-    - Número de imágenes en la DB
-* Fecha de Extracción:
-    - Fecha en la que se descargó la imagen
-* Versión:
-    - Número/representación de la versión em la DB
+Given that these sources are provided as **open-access data** from recognized institutions, the acquisition process primarily involves the **direct download and technical processing of tabular datasets**. These files are subsequently **normalized and mapped** to the repository's internal **metadata standards** to ensure seamless integration.
 
-### Textos Médicos y Nutricionales
-* Formato de Archivo:
-    - `embeddings` (vector de texto embebido, debido a que estos documentos están en una base de datos vectorial)
-* Atributos:
-    - Titulo del Texto
-      - *String*
-      - Título, nombre o siglas que representan el documento o texto
-    - Contenido
-      - *String*
-      - Contenido en texto plano (`.txt` o `.pdf`) o estructurado (`.md`) sobre la información del documento o texto
-      - Este atributo solo está presente durante la Extracción, luego se va a embeber en un vector para el RAG
-    - Fecha de Publicación
-      - *Datetime*
-      - Fecha en formato *YYYY/MM/DD* en la que se publicó el texto
-    - Origen
-      - *String*
-      - Fuente URL de la que proviene el texto
-    - Autor/Origen/Institución Emisora:
-      - Ente encargo de la publicación o emisión del documento en internet
-* Fecha de Extracción:
-    - Fecha en la que se obtuvo el documento
-* Versión:
-    - Número/representación de la versión en la DB
+### Entity Resolution
+Before database persistence, the system executes an **entity resolution phase**. This ensures that ingredient descriptors from recipes **perfectly align** with those in the nutritional and cost catalogs. We employ **Small Language Models (SLMs)** and **string-matching algorithms** to evaluate **semantic similarity**, ensuring **consistent logical linking** across the repository.
 
-## Almacenamiento y Organización de los Datos
-De los objetos relevantes, cada uno pertenece a un tipo de database diferente, esto debido a la naturaleza de cómo se tienen que almacenar para mejorar su disposición para el sistema de IA y, por lo tanto, al usuario final (los comités en cada escuela). Una parte de los datos extraídos no son visibles para el usuario (documentos, ciertas recetas) pero que sí lo son para la IA al momento de consultar y generar sugerencias de los menús a la escuelas. En cambio, la mayor parte de las recetas serán visibles por el usuario al momento que empiece a explorar las posibilidades de preparaciones.
+### Persistence and Storage
+The **refined data is hosted on Supabase** (Supabase, 2026), following a relational model designed for high referential integrity:
+![](../Resources/DiagramDatabaseIngredients.png)
 
-### Almacenamiento
-Los datos que son extraídos y transformados serán almacenados en tres tipos de bases de datos:
-* SQL DB en Postgres para almacenar los datos de las recetas (ingredientes, aportes nutricionales, referencias URI a sus imágenes). Tanto en development y production se emplea la ejecución local (en el host) de PostgresSQL
-```mermaid
-erDiagram
-    direction LR;
-    NUTRIENTS {
-        text Name
-    }
-    INGREDIENTS {
-        text name
-        int Calories
-        int Proteins
-        int Fats
-        float Price
-        text UnitMeasurement
-    }
-    IMAGES {
-        text URI
-        text Source
-    }
-    RECIPES {
-        text Name
-        int TotalTime
-        int Servings
-        text Directions
-        int Calories
-        int Proteins
-        int Fats
-        text Source
-        float PricePerServing
-    }
+## Documents Database
+To provide the system with deep **semantic awareness** regarding nutritional principles and food safety, we are developing a **Retrieval-Augmented Generation (RAG) framework** (Gao et al., 2023). This architecture allows a **future ChatBot** to move beyond standard language patterns by grounding its **responses** in a **specialized, high-authority knowledge base**.
 
-    INGREDIENTS }|--|{ NUTRIENTS : Contains
-    RECIPES }o--|{ INGREDIENTS : Prepares
-    RECIPES ||--o{ IMAGES : Looks
-```
-* Almacenamiento basado en Objetos (Object-based Storage) para almacenar las imágenes de las recetas. En development se emplea el almacenamiento local y en production S3 de AWS
-* Vector DB para almacenar los embeddings de los documentos y textos extraídos. Tanto en development y production se emplea la ejecución local  (en el host) de Qdrant (se considera usar S3 de AWS para almacenar los embeddings en production)
+### Data Acquisition
+We are curating a specialized corpus from global and national health authorities to ensure the assistant's advice is scientifically sound. Sources include:
+* **International and National Authorities**: [WHO Fact Sheets](https://www.who.int/news-room/fact-sheets), [INSP (Mexico)](https://insp.mx/), and [EatRight](https://www.eatright.org/health).
+* **Regulatory and Educational Guides**: [SEP (Secretaría de Educación Pública)](https://www.gob.mx/sep) and [Larousse Cocina](https://laroussecocina.mx/tecnicas/).
 
-### Organización
-Para la interfaz del usuario se planea hacer dos paneles, uno con el pueda chatear con la IA para la planificación de sus recetas y otro para visualizar las posibles preparaciones con las que cuenta el sistema, y que estos paneles se encuentren en tabs en un menú lateral ocultable.
+We utilize **Crawl4AI** (Crawl4AI Contributors, 2026) to automate extraction of **unstructured text** and **direct download** for processing the PDF files.
 
-## Pipelines
-Para la creación de las diferentes pipelines y procesos dentro del ETL se usó principalmente Python junto con [Crawl4ai](https://crawl4ai.com/), lo cual permitió que la tarea de extracción fuera simple de realizar y sin complicaciones, además de ofrecer que el resultado de la extracción sea formateado directamente en archivos JSON para su fácil transformación.
+### Embedding Representation
+To maintain **coherence** within the latent space, the system utilizes **state-of-the-art vision-language models** for **data transformation** (embeddings generation). We employ the **Qwen3-VL family of models** (Bai et al., 2025; Li et al., 2026), which can interpret not only text but also **complex document structures**, charts, and infographics, ensuring that **visual nutritional data is properly vectorized** (Yin et al., 2024).
 
-### Pipeline para BEDCA
-* [*E*] De la página [Base de Datos BEDCA](https://www.bedca.net/bdpub/index.php), se extrajeron los valores y aportes nutricionales de los ingredientes que contienen en diferentes presentaciones.
-* [*T*] De cada ingrediente, solo se formatearon los valores nutricionales según el esquema de las recetas, es decir, generar una lista con los nutrientes y sus aportes.
-* [*L*] Los esquemas transformados se almacenan de forma temporal como archivos JSON para su posterior carga a la base de datos SQL.
+### Persistence and Vector Storage
+The resulting high-dimensional vectors are stored in the **Supabase Vector engine** (Supabase, 2026), organized for **efficient similarity searches**. The embeddings are **stored alongside descriptive metadata** (titles, publication dates, and keywords) to ensure full **traceability** of the information source.
 
-### Pipeline para PROFECO
-* [*E*] De la página [PROFECO: Quién es Quién en los Precios](https://qqp.profeco.gob.mx/), se extrajeron los precios y descripción de los diferentes productos que se venden en las tiendas y supermercados en el estado de Michoacán.
-* [*T*] Como los datos ya se encontraban tabulados (como datos abiertos), solo se conservó la categoría de cada producto junto con el precio, cantidad del producto y la unidad de medida del producto.
-* [*L*] Los datos tabulados y transformados se almacenan de forma temporal en un archivo CSV para su posterior carga hacia la base de datos SQL.
-
-### Pipeline para Allrecipes
-* [*E*] De la página [Allrecipes](https://www.allrecipes.com), se extrajeron los ingredientes, instrucciones y aportes nutricionales de las recetas pertenecientes a la cocina mexicana.
-* [*T*] De cada receta, solo se formatearon los valores y atributos de interés para el proyecto para adecuarse al esquema de metadatos definido en las secciones anteriores. 
-* [*L*] Los esquemas completos de cada recetas son guardados de forma temporal como archivos JSON para su futura carga hacia la base de datos SQL una vez que se tengan los restantes datos.
+## References
+* PostgreSQL Development Team. (2026). PostgreSQL: The World’s Most Advanced Open Source Relational Database. https://www.postgresql.org
+* Qdrant Team. (2026). Qdrant: Vector Search Engine. https://qdrant.tech/
+* Supabase, I. (2026). Supabase: The Postgres Development Platform. https://supabase.com/
+* Crawl4AI Contributors. (2026). Crawl4AI: Open-source LLM Friendly Web Crawler & Scraper.https://github.com/crawl4ai/crawl4ai
+* Gao, Y., Xiong, Y., Gao, X., Jia, K., Pan, J., Bi, Y., Dai, Y., Sun, J., Wang, H., Wang, H., et al. (2023). Retrieval-augmented generation for large language models: A survey. arXiv preprint arXiv:2312.10997, 2 (1), 32.
+* Bai, S., Cai, Y., Chen, R., Chen, K., Chen, X., Cheng, Z., Deng, L., Ding, W., Gao, C., Ge, C., Ge, W., Guo, Z., Huang, Q., Huang, J., Huang, F., Hui, B., Jiang, S., Li, Z., Li, M., Zhu, K. (2025). Qwen3-VL Technical Report. https://arxiv.org/abs/2511.21631
+* Li, M., Zhang, Y., Long, D., Chen, K., Song, S., Bai, S., Yang, Z., Xie, P., Yang, A., Liu, D., Zhou, J., & Lin, J. (2026). Qwen3-VL-Embedding and Qwen3-VL-Reranker: A Unified Framework for State-of-the-Art Multimodal Retrieval and Ranking. https://arxiv.org/abs/2601.04720
