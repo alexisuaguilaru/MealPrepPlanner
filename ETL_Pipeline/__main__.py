@@ -1,9 +1,7 @@
 import asyncio
 import logging
 
-from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO , MainDatasetPricesSNIIM 
-from ETL_Pipeline import MainAllrecipes , MainKiwilimon , MainEatRight
-from ETL_Pipeline import  MainWHO , MainINSP , MainSEP , MainDocumentsEatRight , MainLarousse
+from .Mains import MainExtraction
 
 from .Logger import ColorFormatter
 
@@ -18,53 +16,7 @@ logging.basicConfig(level = logging.INFO)
 
 if __name__ == '__main__':
     _logger.info('No issues with imports')
-    _logger.info('Start Web Scraping')
-
-    _logger.info('Start Web Scraping of Ingredients from BEDCA')
-    ingredients_bedca = MainBEDCA()
-    list(ingredients_bedca)
-
-    _logger.info('Start Web Scraping of Ingredients from INSP: BAM')
-    ingredients_insp = MainDatasetINSP()
-
-    _logger.info('Start Ingredients Prices from PROFECO')
-    ingredients_profeco = MainDatasetPricesPROFECO()
-
-    _logger.info('Start Ingredients Prices from SNIIM')
-    ingredients_sniim = MainDatasetPricesSNIIM()
-    list(ingredients_sniim)
-
-    _logger.info('Start Web Scraping of Recipes from Allrecipes')
-    recipes_allrecipes = MainAllrecipes()
-    list(recipes_allrecipes)
-
-    _logger.info('Start Web Scraping of Recipes from Kiwilimon')
-    recipes_kiwlimon = MainKiwilimon(5)
-    list(recipes_kiwlimon)
-
-    _logger.info('Start Web Scraping of Recipes from EatRight')
-    recipes_eatright = MainEatRight()
-    list(recipes_eatright)
-
-    _logger.info('Start Web Scraping of Pages from WHO')
-    documents_who = MainWHO()
-    list(documents_who)
-
-    _logger.info('Start Downloading of Files from INSP')
-    documents_insp = MainINSP()
-    list(documents_insp)
-
-    _logger.info('Start Downloading of Files from SEP')
-    documents_sep = MainSEP()
-    list(documents_sep)
-
-    _logger.info('Start Web Scraping of Pages from EatRight')
-    documents_eatright = MainDocumentsEatRight(2,3)
-    list(documents_eatright)
-
-    _logger.info('Start Web Scraping of Pages from Larousse')
-    documents_larousse = MainLarousse(5)
-    list(documents_larousse)
+    
+    MainExtraction(_logger)
 
     _logger.info('No issues found')
-    _logger.info('End Web Scraping')
