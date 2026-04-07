@@ -36,5 +36,5 @@ async def MainScrapeTechniqueContent(LinkTechnique):
     return CleanMarkdown(result.markdown)
 
 def CleanMarkdown(MarkdownContent):
-    PatternMarkdown = r'(### Información adicional.+?)(Lo siento, debes estar \[conectado\])'
+    PatternMarkdown = r'(### Información adicional.+?|### Procedimiento.+?)(Lo siento, debes estar \[conectado\])'
     return re.search(PatternMarkdown,MarkdownContent,re.DOTALL).group(1)

@@ -1,6 +1,6 @@
 import asyncio
 import random
-from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , BrowserConfig , JsonCssExtractionStrategy
+from crawl4ai import AsyncWebCrawler , CrawlerRunConfig , CrawlResult , BrowserConfig , JsonCssExtractionStrategy , CacheMode
 import json
 
 from ...Utils import BasicCrawlerRunConfig , BasicBrowserConfig
@@ -19,11 +19,13 @@ async def MainScrapeTechniques(NumClicks):
 
             if (button) {{
                 button.click();
-                await new Promise(resolve => setTimeout(resolve, delayMs));
+                await new Promise(resolve => setTimeout(resolve,delayMs));
             }} else {{
                 break;
             }}
         }}
+
+        await new Promise(resolve => setTimeout(resolve,10000));
     }})();
     """
 
@@ -40,14 +42,11 @@ async def MainScrapeTechniques(NumClicks):
         headless = False,
     )
 
-    CrawlerRunConfig_Larousse = BasicCrawlerRunConfig.copy()
-    del CrawlerRunConfig_Larousse['wait_until']
     CrawlerConfig = CrawlerRunConfig(
         extraction_strategy = JsonCssExtractionStrategy(ExtractionSchema),
         js_code = LoadMoreTechniques,
-        session_id = SessionID,
-        scan_full_page = True,
-        max_scroll_steps = 3,
+        delay_before_return_html = 10,
+        wait_until = 'domcontentloaded',
     )
 
     async with AsyncWebCrawler(config=Browser) as crawler:
