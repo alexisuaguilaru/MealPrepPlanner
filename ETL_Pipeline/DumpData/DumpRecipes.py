@@ -1,10 +1,28 @@
 import re
+import pandas as pd
 
 from ..Utils import GatherRecipes
 
+ColumnsRecipe = [
+    'Name',
+    'TotalTime',
+    'Servings',
+    'Instructions',
+    'Image',
+    'Source',
+    'Calories',
+    'Carbohydrates',
+    'Proteins',
+    'Fats',
+]
 def MainDumpRecipes():
+    RecipesRaw = []
     for recipe in GatherRecipes():
-        CleanFieldsRecipe(recipe)
+        clean_recipe = CleanFieldsRecipe(recipe)
+        RecipesRaw.append(clean_recipe)
+
+    RecipesDataFrame = pd.DataFrame(RecipesRaw,columns=ColumnsRecipe)
+    return RecipesDataFrame
 
 FieldCleanersPipeline = [
     CleanFieldName,

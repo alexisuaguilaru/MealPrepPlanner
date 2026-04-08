@@ -1,13 +1,21 @@
 import re
+import pandas as pd
 
 from ..Utils import GatherIngredientsNutritional_JSON , GatherIngredientsNutritional_CSV
 
 def MainDumpIngredients():
+    IngredientsJSONRaw = []
     for ingredient in GatherIngredientsNutritional_JSON():
-        CleanIngredientJSON(ingredient)
+        clean_ingredient = CleanIngredientJSON(ingredient)
+        IngredientsJSONRaw.append(clean_ingredient)
 
     IngredientsCSV = GatherIngredientsNutritional_CSV()
-    IngredientsCSV = CleanIngredientsCSV(IngredientsCSV)
+
+    IngredientsCSVDataFrame = CleanIngredientsCSV(IngredientsCSV)
+    IngredientsJSONDataFrame = pd.DataFrame(IngredientsJSONRaw,columns=IngredientsCSVDataFrame.columns)
+
+    IngredientsDataFrame = pd.concat([IngredientsJSONDataFrame,IngredientsCSVDataFrame])
+    return IngredientsDataFrame
 
 FieldCleanersPipeline = [
     CleanFieldName,
