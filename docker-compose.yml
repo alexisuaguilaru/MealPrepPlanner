@@ -5,6 +5,7 @@ services:
         container_name: supabase-db
         image: supabase/postgres:15.8.1.085
         volumes:
+          - ./Database/00_CreateTables.sql:/docker-entrypoint-initdb.d/init-scripts/98_CreateTables.sql:Z
           - ./Database/01_CreateRoles.sql:/docker-entrypoint-initdb.d/init-scripts/99_CreateRoles.sql:Z
           - DatabaseData:/var/lib/postgresql/data
 
@@ -25,13 +26,11 @@ services:
             JWT_SECRET: ${JWT_SECRET}
         
         healthcheck:
-            test:
-                ["CMD","pg_isready","-U","postgres","-h","localhost"]
+            test: ["CMD","pg_isready","-U","postgres","-h","localhost"]
             interval: 5s
             timeout: 5s
             retries: 10
-        command:
-            ["postgres","-c","config_file=/etc/postgresql/postgresql.conf",]
+        command: ["postgres","-c","config_file=/etc/postgresql/postgresql.conf",]
 
     restful-api:
         container_name: supabase-restapi
@@ -41,21 +40,21 @@ services:
             - "2345:${POSTGREST_PORT:-2345}"
         
         environment:
-            PGPORT: ${POSTGREST_PORT:-2345}
-            PGRST_DB_URI: postgres://reader_data:${DB_ROLE_READ_DATA_PASS}@sql-db:${POSTGRES_PORT}/${POSTGRES_DB}
-            PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-${SCHEMA_DB}}
+            PGRST_SERVER_PORT: ${POSTGREST_PORT:-2345}
+            PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD:-supabase_password}@sql-db:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-supabase_db}
+            PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-${SCHEMA_DB:-meal_prep},public}
             PGRST_DB_EXTRA_SEARCH_PATH: ${PGRST_DB_EXTRA_SEARCH_PATH:-public}
-            PGRST_DB_ANON_ROLE: ${PGRST_DB_ANON_ROLE:-anon}
-            PGRST_DB_USE_LEGACY_GUCS: "false"
-            
+
+            PGRST_DB_ANON_ROLE: reader_data
+
             PGRST_JWT_SECRET: ${JWT_JWKS:-${JWT_SECRET}}
             PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+            PGRST_DB_USE_LEGACY_GUCS: "false"
 
         depends_on:
             sql-db:
                 condition: service_healthy
-        command:
-            ["postgrest"]
+        command: ["postgrest"]
 
 volumes:
     DatabaseData:
