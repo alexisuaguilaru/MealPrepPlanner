@@ -14,7 +14,7 @@ def MainDumpIngredients():
     IngredientsCSVDataFrame = CleanIngredientsCSV(IngredientsCSV)
     IngredientsJSONDataFrame = pd.DataFrame(IngredientsJSONRaw,columns=IngredientsCSVDataFrame.columns)
 
-    IngredientsDataFrame = pd.concat([IngredientsJSONDataFrame,IngredientsCSVDataFrame])
+    IngredientsDataFrame = pd.concat([IngredientsJSONDataFrame,IngredientsCSVDataFrame],ignore_index=True)
     return IngredientsDataFrame
 
 FieldCleanersPipeline = [
