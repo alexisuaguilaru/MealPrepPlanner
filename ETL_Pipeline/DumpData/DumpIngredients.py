@@ -1,8 +1,13 @@
 import re
+from uuid import uuid4
 import pandas as pd
 
 from ..Utils import GatherIngredientsNutritional_JSON , GatherIngredientsNutritional_CSV
 
+NotNullColumns = [
+    'Name',
+    'Calories',
+]
 def MainDumpIngredients():
     IngredientsJSONRaw = []
     for ingredient in GatherIngredientsNutritional_JSON():
@@ -15,19 +20,15 @@ def MainDumpIngredients():
     IngredientsJSONDataFrame = pd.DataFrame(IngredientsJSONRaw,columns=IngredientsCSVDataFrame.columns)
 
     IngredientsDataFrame = pd.concat([IngredientsJSONDataFrame,IngredientsCSVDataFrame],ignore_index=True)
-    return IngredientsDataFrame
+    IngredientsDataFrame.dropna(subset=NotNullColumns,inplace=True)
+    IngredientsDataFrame['id'] = IngredientsDataFrame['Name'].apply(lambda value: uuid4())
 
-FieldCleanersPipeline = [
-    CleanFieldName,
-]
-def CleanIngredientJSON(Ingredient):
-    CleanFields = [field_cleaner(Ingredient) for field_cleaner in FieldCleanersPipeline]
-    CleanFields.extend(CleanFieldsMacronutrients(Ingredient))
-    return CleanFields
+    IngredientsDataFrame.to_csv('./Datasets/SQL/Ingredients.csv',index=False)
+    return IngredientsDataFrame
 
 def CleanFieldName(Ingredient):
     Name = Ingredient.get('Spanish Name') or Ingredient.get('English Name')
-    return Name.capitalize()
+    return Name.capitalize() if Name else None
 
 def CleanFieldsMacronutrients(Ingredient):
     return _ExtractCalories(Ingredient) , *_ExtractMacroValue(Ingredient)
@@ -48,7 +49,8 @@ def _ExtractMacroValue(Ingredient):
     return Carbohydrates , Proteins , Fats
 
 def _ExtractCalories(Ingredient):
-    return int(Ingredient['Calories'])
+    Calories = Ingredient.get('Calories')
+    return int(Calories) if Calories else None
 
 MacroValuePattern = r'\d+'
 def _CleanMacroValue(MacronutrientValue):
@@ -76,3 +78,11 @@ def CleanIngredientsCSV(Ingredients):
     CleanIngredients[Macronutrients] = CleanIngredients[Macronutrients].astype(int)
 
     return CleanIngredients
+
+FieldCleanersPipeline = [
+    CleanFieldName,
+]
+def CleanIngredientJSON(Ingredient):
+    CleanFields = [field_cleaner(Ingredient) for field_cleaner in FieldCleanersPipeline]
+    CleanFields.extend(CleanFieldsMacronutrients(Ingredient))
+    return CleanFields

@@ -4,6 +4,8 @@ from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO 
 from ETL_Pipeline import MainAllrecipes , MainKiwilimon , MainEatRight
 from ETL_Pipeline import  MainWHO , MainINSP , MainSEP , MainDocumentsEatRight , MainLarousse
 
+from ETL_Pipeline import MainDumpRecipes , MainDumpIngredients
+
 def MainExtraction(MainLogger: logging.Logger):
     MainLogger.info('Start Web Scraping & Downloads')
 
@@ -54,3 +56,14 @@ def MainExtraction(MainLogger: logging.Logger):
     list(documents_larousse)
 
     MainLogger.info('End Web Scraping & Downloads')
+
+def MainLoad(MainLogger: logging.Logger):
+    MainLogger.info('Start Loading & Dumping Data')
+
+    MainLogger.info('Start Dump of Recipes Data')
+    recipes_dataframe = MainDumpRecipes()
+
+    MainLogger.info('Start Dump of Ingredients Data')
+    ingredients_dataframe = MainDumpIngredients()
+
+    MainLogger.info('End Loading & Dumping Data')

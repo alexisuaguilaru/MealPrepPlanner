@@ -1,4 +1,5 @@
 import re
+from uuid import uuid4
 import pandas as pd
 
 from ..Utils import GatherRecipes
@@ -15,6 +16,13 @@ ColumnsRecipe = [
     'Proteins',
     'Fats',
 ]
+NotNullColumns = [
+    'Name',
+    'TotalTime',
+    'Servings',
+    'Instructions',
+    'Source',
+]
 def MainDumpRecipes():
     RecipesRaw = []
     for recipe in GatherRecipes():
@@ -22,23 +30,16 @@ def MainDumpRecipes():
         RecipesRaw.append(clean_recipe)
 
     RecipesDataFrame = pd.DataFrame(RecipesRaw,columns=ColumnsRecipe)
+    RecipesDataFrame.dropna(subset=NotNullColumns,inplace=True)
+    RecipesDataFrame['id'] = RecipesDataFrame['Name'].apply(lambda value: uuid4())
+    RecipesDataFrame.dropna(subset=NotNullColumns,inplace=True)
+
+    RecipesDataFrame.to_csv('./Datasets/SQL/Recipes.csv',index=False)
     return RecipesDataFrame
 
-FieldCleanersPipeline = [
-    CleanFieldName,
-    CleanFieldTotalTime,
-    CleanFieldServings,
-    CleanFieldInstructions,
-    CleanFieldImage,
-    CleanFieldSource,
-]
-def CleanFieldsRecipe(Recipe):
-    CleanFields = [field_cleaner(Recipe) for field_cleaner in FieldCleanersPipeline]
-    CleanFields.extend(CleanFieldsMacronutrients(Recipe))
-    return CleanFields
-
 def CleanFieldName(Recipe):
-    return Recipe.get('Name','').capitalize()
+    Name = Recipe.get('Name')
+    return Name.capitalize() if Name else None
 
 TimePattern = r'((?P<hours>\d+)\s*hrs?)?\s*((?P<minutes>\d+)\s*mins?)?'
 def CleanFieldTotalTime(Recipe):
@@ -59,9 +60,11 @@ def CleanFieldServings(Recipe):
     return Servings
 
 def CleanFieldInstructions(Recipe):
-    ListSteps = Recipe.get('Instructions',[])
-    EnumeratedSteps = enumerate(ListSteps,1)
-    Instructions = '\n'.join(map(_FormatInstructionStep,EnumeratedSteps))
+    ListSteps = Recipe.get('Instructions')
+    Instructions = None
+    if ListSteps:
+        EnumeratedSteps = enumerate(ListSteps,1)
+        Instructions = '\n'.join(map(_FormatInstructionStep,EnumeratedSteps))        
     return Instructions
 
 def CleanFieldImage(Recipe):
@@ -99,3 +102,16 @@ def _ExtractMacroValue(Macronutrient):
     if not Macronutrient: return None
     MatchMacronutrient = re.search(r'\d+',Macronutrient)
     return int(MatchMacronutrient[0]) if MatchMacronutrient else None
+
+FieldCleanersPipeline = [
+    CleanFieldName,
+    CleanFieldTotalTime,
+    CleanFieldServings,
+    CleanFieldInstructions,
+    CleanFieldImage,
+    CleanFieldSource,
+]
+def CleanFieldsRecipe(Recipe):
+    CleanFields = [field_cleaner(Recipe) for field_cleaner in FieldCleanersPipeline]
+    CleanFields.extend(CleanFieldsMacronutrients(Recipe))
+    return CleanFields
