@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from sentence_transformers import SentenceTransformer
 
 from ..Database import CreateConnectionToSQL
 
@@ -14,3 +15,11 @@ def DumpDataFrameToSQL(DataFrame,TableSQL):
         if_exists = 'append',
     )
     return NumRows
+
+# env var 'HF_TOKEN'
+def InitSemanticModel():
+    SemanticModel = SentenceTransformer(
+        'microsoft/harrier-oss-v1-270m',
+        model_kwargs = {'dtype': 'auto'}
+    )
+    return SemanticModel

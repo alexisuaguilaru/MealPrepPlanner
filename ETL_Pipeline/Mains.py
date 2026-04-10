@@ -5,7 +5,7 @@ from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO 
 from ETL_Pipeline import MainAllrecipes , MainKiwilimon , MainEatRight
 from ETL_Pipeline import  MainWHO , MainINSP , MainSEP , MainDocumentsEatRight , MainLarousse
 
-from ETL_Pipeline import MainDumpRecipes , MainDumpIngredients
+from ETL_Pipeline import MainDumpRecipes , MainDumpIngredients , MainDumpIngredientsEmbeddings
 
 def MainExtraction(MainLogger: logging.Logger):
     MainLogger.info('Start Web Scraping & Downloads')
@@ -63,14 +63,19 @@ def MainLoad(MainLogger: logging.Logger):
 
     MainLogger.info('Start Dump of Recipes Data')
     try:
-        recpes_rows = MainDumpRecipes()
+        # recpes_rows = MainDumpRecipes()
+        pass
     except IntegrityError:
         MainLogger.info('Recipes Data Preloaded')    
 
     MainLogger.info('Start Dump of Ingredients Data')
     try:
-        ingredients_rows = MainDumpIngredients()
+        # ingredients_rows = MainDumpIngredients()
+        pass
     except IntegrityError:
-        MainLogger.info('Ingredients Data Preloaded')    
+        MainLogger.info('Ingredients Data Preloaded')
+
+    MainLogger.info('Start Dump of Ingredients Embeddings Data')
+    MainDumpIngredientsEmbeddings(MainLogger)
 
     MainLogger.info('End Loading & Dumping Data')

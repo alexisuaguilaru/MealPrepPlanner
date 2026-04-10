@@ -1,2 +1,2 @@
 from .Recipes import MainDumpRecipes
-from .Ingredients import MainDumpIngredients
+from .Ingredients import MainDumpIngredients , MainDumpIngredientsEmbeddings
