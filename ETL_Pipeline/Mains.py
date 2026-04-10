@@ -1,4 +1,5 @@
 import logging
+from sqlalchemy.exc import IntegrityError
 
 from ETL_Pipeline import MainBEDCA , MainDatasetINSP , MainDatasetPricesPROFECO , MainDatasetPricesSNIIM 
 from ETL_Pipeline import MainAllrecipes , MainKiwilimon , MainEatRight
@@ -61,9 +62,15 @@ def MainLoad(MainLogger: logging.Logger):
     MainLogger.info('Start Loading & Dumping Data')
 
     MainLogger.info('Start Dump of Recipes Data')
-    recipes_dataframe = MainDumpRecipes()
+    try:
+        recpes_rows = MainDumpRecipes()
+    except IntegrityError:
+        MainLogger.info('Recipes Data Preloaded')    
 
     MainLogger.info('Start Dump of Ingredients Data')
-    ingredients_dataframe = MainDumpIngredients()
+    try:
+        ingredients_rows = MainDumpIngredients()
+    except IntegrityError:
+        MainLogger.info('Ingredients Data Preloaded')    
 
     MainLogger.info('End Loading & Dumping Data')

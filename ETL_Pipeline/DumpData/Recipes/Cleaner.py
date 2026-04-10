@@ -1,41 +1,9 @@
 import re
-from uuid import uuid4
-import pandas as pd
 
-from ..Utils import GatherRecipes
-
-ColumnsRecipe = [
-    'Name',
-    'TotalTime',
-    'Servings',
-    'Instructions',
-    'Image',
-    'Source',
-    'Calories',
-    'Carbohydrates',
-    'Proteins',
-    'Fats',
-]
-NotNullColumns = [
-    'Name',
-    'TotalTime',
-    'Servings',
-    'Instructions',
-    'Source',
-]
-def MainDumpRecipes():
-    RecipesRaw = []
-    for recipe in GatherRecipes():
-        clean_recipe = CleanFieldsRecipe(recipe)
-        RecipesRaw.append(clean_recipe)
-
-    RecipesDataFrame = pd.DataFrame(RecipesRaw,columns=ColumnsRecipe)
-    RecipesDataFrame.dropna(subset=NotNullColumns,inplace=True)
-    RecipesDataFrame['id'] = RecipesDataFrame['Name'].apply(lambda value: uuid4())
-    RecipesDataFrame.dropna(subset=NotNullColumns,inplace=True)
-
-    RecipesDataFrame.to_csv('./Datasets/SQL/Recipes.csv',index=False)
-    return RecipesDataFrame
+def CleanFieldsRecipe(Recipe):
+    CleanFields = [field_cleaner(Recipe) for field_cleaner in FieldCleanersPipeline]
+    CleanFields.extend(CleanFieldsMacronutrients(Recipe))
+    return CleanFields
 
 def CleanFieldName(Recipe):
     Name = Recipe.get('Name')
@@ -111,7 +79,3 @@ FieldCleanersPipeline = [
     CleanFieldImage,
     CleanFieldSource,
 ]
-def CleanFieldsRecipe(Recipe):
-    CleanFields = [field_cleaner(Recipe) for field_cleaner in FieldCleanersPipeline]
-    CleanFields.extend(CleanFieldsMacronutrients(Recipe))
-    return CleanFields
