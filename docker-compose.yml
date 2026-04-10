@@ -5,8 +5,9 @@ services:
         container_name: supabase-db
         image: supabase/postgres:15.8.1.085
         volumes:
-          - ./Database/00_CreateTables.sql:/docker-entrypoint-initdb.d/init-scripts/98_CreateTables.sql:Z
-          - ./Database/01_CreateRoles.sql:/docker-entrypoint-initdb.d/init-scripts/99_CreateRoles.sql:Z
+          - ./Database/00_CreateTables.sql:/docker-entrypoint-initdb.d/init-scripts/990_CreateTables.sql:Z
+          - ./Database/01_CreateRoles.sql:/docker-entrypoint-initdb.d/init-scripts/991_CreateRoles.sql:Z
+          - ./Database/02_CreateFunctions.sql:/docker-entrypoint-initdb.d/init-scripts/992_CreateFunctions.sql:Z
           - DatabaseData:/var/lib/postgresql/data
 
         ports:

@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS "NUTRIENTS" (
 CREATE TABLE IF NOT EXISTS "RECIPES_INGREDIENTS" (
 	"recipe_id" UUID NOT NULL,
 	"ingredient_id" UUID NOT NULL,
-	"NumericAmount" REAL NOT NULL,
-	"StringAmount" TEXT NOT NULL,
+	"NumericAmount" REAL,
+	"StringAmount" TEXT,
 	"UnitMeasurement" TEXT,
 	CONSTRAINT foreign_recipes FOREIGN KEY("recipe_id") REFERENCES "RECIPES"("id"),
 	CONSTRAINT foreign_ingredients FOREIGN KEY("ingredient_id") REFERENCES "INGREDIENTS"("id")
