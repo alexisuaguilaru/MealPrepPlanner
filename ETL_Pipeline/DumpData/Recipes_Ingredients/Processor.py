@@ -56,6 +56,7 @@ def ProcessEmbeddingData(DatasetRecipesIngredients):
     for batch_data in BatchRecipesIngredientsDataFrame:
         ingredients_recipes = batch_data[ColumnsRecipeIngredientsIDs].copy()
         ingredients_recipes['ingredient_id'] = SearchIngredientID(batch_data['IngredientName'])
+        ingredients_recipes['IngredientName'] = batch_data['IngredientName']
         yield ingredients_recipes
 
 def _InitSearchIngredientID(IngredientsNames,Model,ConnectionAPI):

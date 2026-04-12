@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS "INGREDIENTS" (
 );
 CREATE TABLE IF NOT EXISTS "INGREDIENTS_EMBEDDINGS" (
 	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-	"Embedding" vector(640)	
+	"Embedding" vector(640),
+	CONSTRAINT foreign_ingredients FOREIGN KEY("id") REFERENCES "INGREDIENTS"("id")
 );
 CREATE INDEX ON "INGREDIENTS_EMBEDDINGS" USING hnsw ("Embedding" vector_cosine_ops);
 
@@ -48,6 +49,7 @@ CREATE TABLE IF NOT EXISTS "NUTRIENTS" (
 CREATE TABLE IF NOT EXISTS "RECIPES_INGREDIENTS" (
 	"recipe_id" UUID NOT NULL,
 	"ingredient_id" UUID NOT NULL,
+	"IngredientName" TEXT,
 	"NumericAmount" REAL,
 	"StringAmount" TEXT,
 	"UnitMeasurement" TEXT,
