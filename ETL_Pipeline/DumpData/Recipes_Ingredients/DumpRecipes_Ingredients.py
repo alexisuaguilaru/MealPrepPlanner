@@ -26,7 +26,6 @@ def MainDumpRecipes_Ingredients(MainLogger):
     else:
         BatchRecipesIngredientsDataFrame = pd.read_csv(DatasetRecipesIngredients,chunksize=250)
         for index , batch_ingredients_recipes in enumerate(BatchRecipesIngredientsDataFrame):
-            DumpDataFrameToSQL(batch_ingredients_recipes,'RECIPES_INGREDIENTS')
             try:
                 DumpDataFrameToSQL(batch_ingredients_recipes,'RECIPES_INGREDIENTS')
             except IntegrityError:

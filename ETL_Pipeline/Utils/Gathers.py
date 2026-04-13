@@ -18,3 +18,14 @@ def GatherIngredientsNutritional_CSV():
     IngredientsDataset = Path('./Datasets/IngredientsNutritional')
     INSPDataset = IngredientsDataset/'INSP'/'clean.csv'
     return pd.read_csv(INSPDataset)
+
+def GatherIngredientsPrices_SNIIM():
+    BaseIngredientsDataset = './Datasets/IngredientsPrices/SNIIM/Consulta{}.csv'
+    for ingredient in ['FrutasYHortalizas','Granos','Bov_01','Pol_09','Hue_01','Por_01','MO','PM']:
+        path_ingredient_csv = Path(BaseIngredientsDataset.format(ingredient))
+        yield pd.read_csv(path_ingredient_csv,)
+
+def GatherIngredientsPrices_PROFECO():
+    IngredientsDataset = Path('./Datasets/IngredientsPrices')
+    PROFECODataset = IngredientsDataset/'PROFECO'/'clean.csv'
+    return pd.read_csv(PROFECODataset)

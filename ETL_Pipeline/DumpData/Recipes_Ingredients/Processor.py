@@ -1,5 +1,6 @@
 from functools import partial
 import pandas as pd
+from uuid import uuid4
 
 from .Cleaner import CleanFieldIngredients
 from ..Utils import InitSemanticModel
@@ -57,6 +58,7 @@ def ProcessEmbeddingData(DatasetRecipesIngredients):
         ingredients_recipes = batch_data[ColumnsRecipeIngredientsIDs].copy()
         ingredients_recipes['ingredient_id'] = SearchIngredientID(batch_data['IngredientName'])
         ingredients_recipes['IngredientName'] = batch_data['IngredientName']
+        ingredients_recipes['id'] = ingredients_recipes['IngredientName'].apply(lambda value: uuid4())
         yield ingredients_recipes
 
 def _InitSearchIngredientID(IngredientsNames,Model,ConnectionAPI):

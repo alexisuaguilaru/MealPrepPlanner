@@ -22,6 +22,16 @@ CREATE TABLE IF NOT EXISTS "RECIPES" (
 );
 
 
+CREATE TABLE IF NOT EXISTS "INGREDIENTS_PRICES" (
+	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"Name" TEXT,
+	"Price" REAL,
+	"Unit" TEXT,
+	"Embedding" vector(640)
+);
+CREATE INDEX ON "INGREDIENTS_PRICES" USING hnsw ("Embedding" vector_cosine_ops);
+
+
 CREATE TABLE IF NOT EXISTS "INGREDIENTS" (
 	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	"Name" TEXT NOT NULL,
@@ -29,8 +39,11 @@ CREATE TABLE IF NOT EXISTS "INGREDIENTS" (
 	"Carbohydrates" INTEGER,
 	"Proteins" INTEGER,
 	"Fats" INTEGER,
-	"Price" REAL
+	"id_price" UUID NOT NULL,
+	CONSTRAINT foreign_prices FOREIGN KEY("id_price") REFERENCES "INGREDIENTS_PRICES"("id")
 );
+
+
 CREATE TABLE IF NOT EXISTS "INGREDIENTS_EMBEDDINGS" (
 	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	"Embedding" vector(640),
@@ -47,6 +60,7 @@ CREATE TABLE IF NOT EXISTS "NUTRIENTS" (
 
 
 CREATE TABLE IF NOT EXISTS "RECIPES_INGREDIENTS" (
+	"id" UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
 	"recipe_id" UUID NOT NULL,
 	"ingredient_id" UUID NOT NULL,
 	"IngredientName" TEXT,
