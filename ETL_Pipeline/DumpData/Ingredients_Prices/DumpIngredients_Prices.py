@@ -20,8 +20,8 @@ def MainDumpIngredients_Prices(MainLogger):
         IngredientsPricesDataFrame = pd.concat(IngredientsPricesDataFrame_List,ignore_index=True)
         IngredientsPricesDataFrame.to_csv(DatasetIngredientsPrices,index=False)
     else:
-        BatchRecipesIngredientsDataFrame = pd.read_csv(DatasetIngredientsPrices,chunksize=250)
-        for index , batch_ingredients_prices in enumerate(BatchRecipesIngredientsDataFrame):
+        BatchIngredientsPricesDataFrame = pd.read_csv(DatasetIngredientsPrices,chunksize=250)
+        for index , batch_ingredients_prices in enumerate(BatchIngredientsPricesDataFrame):
             try:
                 DumpDataFrameToSQL(batch_ingredients_prices,'INGREDIENTS_PRICES')
             except IntegrityError:

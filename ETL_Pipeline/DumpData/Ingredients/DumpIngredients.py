@@ -2,43 +2,32 @@ from pathlib import Path
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
-from .Processor import ProcessData , ProcessEmbeddingsData
+from .Processor import ProcessTabularData , ProcessEmbeddingsData
 from ..Utils import DumpDataFrameToSQL
 
-import logging
-
 def MainDumpIngredients(MainLogger):
+    DatasetIngredients_Aux = Path('./Datasets/SQL/Ingredients_Aux.csv')
     DatasetIngredients = Path('./Datasets/SQL/Ingredients.csv')
+
+    if not DatasetIngredients_Aux.exists():
+        ProcessTabularData(DatasetIngredients_Aux)
 
     if not DatasetIngredients.exists():
-        IngredientsDataFrame = ProcessData(DatasetIngredients)
-    else:
-        IngredientsDataFrame = pd.read_csv(DatasetIngredients)
-
-    try:
-        DumpDataFrameToSQL(IngredientsDataFrame,'INGREDIENTS')
-    except IntegrityError:
-        MainLogger.info('Ingredients Data Preloaded')
-
-def MainDumpIngredientsEmbeddings(MainLogger: logging.Logger):
-    DatasetIngredients = Path('./Datasets/SQL/Ingredients.csv')
-    DatasetIngredientsEmbeddings = Path('./Datasets/SQL/IngredientsEmbeddings.csv')
-
-    if not DatasetIngredientsEmbeddings.exists():
-        EmbeddingsDataFrame = []
-        for index , batch_embeddings in enumerate(ProcessEmbeddingsData(DatasetIngredients)):
+        DataFrameIngredients_List = []
+        for index , batch_ingredients in enumerate(ProcessEmbeddingsData(DatasetIngredients_Aux)):
             try:
-                DumpDataFrameToSQL(batch_embeddings,'INGREDIENTS_EMBEDDINGS')
+                DumpDataFrameToSQL(batch_ingredients,'INGREDIENTS')
             except IntegrityError:
-                MainLogger.info(f'Ingredients Embeddings {index} Data Preloaded')
-            EmbeddingsDataFrame.append(batch_embeddings)
-
-        IngredientsEmbeddingsDataFrame: pd.DataFrame = pd.concat(EmbeddingsDataFrame,ignore_index=True)
-        IngredientsEmbeddingsDataFrame.to_csv(DatasetIngredientsEmbeddings,index=False)
+                MainLogger.info(f'Ingredients {index} Data Preloaded')
+            DataFrameIngredients_List.append(batch_ingredients)
+        
+        DataFrameIngredients = pd.concat(DataFrameIngredients_List,ignore_index=True)
+        DataFrameIngredients.to_csv(DatasetIngredients,index=False)
+    
     else:
-        BatchIngredientsEmbeddingsDataFrame = pd.read_csv(DatasetIngredientsEmbeddings,chunksize=250)
-        for index , batch_data in enumerate(BatchIngredientsEmbeddingsDataFrame):
+        BatchIngredientsDataFrame = pd.read_csv(DatasetIngredients,chunksize=250)
+        for index , batch_data in enumerate(BatchIngredientsDataFrame):
             try:
-                DumpDataFrameToSQL(batch_data,'INGREDIENTS_EMBEDDINGS')
+                DumpDataFrameToSQL(batch_data,'INGREDIENTS')
             except IntegrityError:
                 MainLogger.info(f'Ingredients Embeddings {index} Data Preloaded')

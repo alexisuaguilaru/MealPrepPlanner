@@ -1,1 +1,1 @@
-from .DumpIngredients import MainDumpIngredients , MainDumpIngredientsEmbeddings
+from .DumpIngredients import MainDumpIngredients
