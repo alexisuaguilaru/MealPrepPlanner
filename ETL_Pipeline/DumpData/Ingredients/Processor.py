@@ -3,11 +3,13 @@ import pandas as pd
 from joblib import Parallel , delayed , cpu_count
 from functools import partial
 
-from .Cleaner import CleanIngredientJSON , CleanIngredientsCSV
 from ..Utils import InitSemanticModel
 from ...Utils import GatherIngredientsNutritional_JSON , GatherIngredientsNutritional_CSV
 
 NutrientsNames = [
+    'Carbohydrates',
+    'Proteins',
+    'Fats',
     'Fiber',
     'Calcium',
     'Iron',
@@ -50,13 +52,27 @@ def ProcessEmbeddingsData(DatasetIngredients):
 
     BatchIngredientsDataFrame = pd.read_csv(
         DatasetIngredients,
-        usecols = ['id','Name',],
         chunksize = 250,
     )
 
     for batch_data in BatchIngredientsDataFrame:
         batch_data['Embedding'] = SemanticModel.encode(batch_data['Name'].to_list()).tolist()
         yield batch_data
+
+def ProcessPricesData(BatchIngredients,SemanticModel,ConnectionToAPI):
+    QueryVectors = SemanticModel.encode(BatchIngredients['Name'].to_list()).tolist()
+
+    IngredientPricesIDs = []
+    for query_vector in QueryVectors:
+        response = ConnectionToAPI.rpc('search_prices',{
+            'query_vec': query_vector,
+            'limit_results': 1,
+            'threshold': 0.25,
+        }).execute()
+        ingredient_id = response.data[0]['id']
+        IngredientPricesIDs.append(ingredient_id)
+    
+    BatchIngredients['id_price'] = IngredientPricesIDs
 
 RenamingColummns_CSV = {
     'nombre_del_alimento': 'Name', 

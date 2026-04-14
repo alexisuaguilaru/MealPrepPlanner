@@ -1,5 +1,5 @@
 from .Recipes import MainDumpRecipes
-from .Ingredients import MainDumpIngredients , MainDumpIngredientsEmbeddings
+from .Ingredients import MainDumpIngredients
 from .Recipes_Ingredients import MainDumpRecipes_Ingredients
 from .Ingredients_Prices import MainDumpIngredients_Prices
 from .Nutrients import MainDumpNutrients

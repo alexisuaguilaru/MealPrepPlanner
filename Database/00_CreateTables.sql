@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "INGREDIENTS_PRICES" (
 	"Name" TEXT,
 	"Price" REAL,
 	"Unit" TEXT,
-	"Embedding" vector(640)
+	"Embedding" vector(640) NOT NULL
 );
 CREATE INDEX ON "INGREDIENTS_PRICES" USING hnsw ("Embedding" vector_cosine_ops);
 
@@ -26,11 +26,11 @@ CREATE INDEX ON "INGREDIENTS_PRICES" USING hnsw ("Embedding" vector_cosine_ops);
 CREATE TABLE IF NOT EXISTS "INGREDIENTS" (
 	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	"Name" TEXT NOT NULL,
-	"Calories" INTEGER NOT NULL,
-	"Carbohydrates" INTEGER,
-	"Proteins" INTEGER,
-	"Fats" INTEGER,
-	"Embedding" vector(640),
+	"Calories" REAL NOT NULL,
+	"Carbohydrates" REAL,
+	"Proteins" REAL,
+	"Fats" REAL,
+	"Embedding" vector(640) NOT NULL,
 	"id_price" UUID NOT NULL,
 	CONSTRAINT foreign_prices FOREIGN KEY("id_price") REFERENCES "INGREDIENTS_PRICES"("id")
 );
