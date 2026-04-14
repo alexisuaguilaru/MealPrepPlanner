@@ -7,7 +7,7 @@ from ..Utils import DumpDataFrameToSQL
 
 import logging
 
-def MainDumpIngredients():
+def MainDumpIngredients(MainLogger):
     DatasetIngredients = Path('./Datasets/SQL/Ingredients.csv')
 
     if not DatasetIngredients.exists():
@@ -15,8 +15,10 @@ def MainDumpIngredients():
     else:
         IngredientsDataFrame = pd.read_csv(DatasetIngredients)
 
-    NumRows = DumpDataFrameToSQL(IngredientsDataFrame,'INGREDIENTS')
-    return NumRows
+    try:
+        DumpDataFrameToSQL(IngredientsDataFrame,'INGREDIENTS')
+    except IntegrityError:
+        MainLogger.info('Ingredients Data Preloaded')
 
 def MainDumpIngredientsEmbeddings(MainLogger: logging.Logger):
     DatasetIngredients = Path('./Datasets/SQL/Ingredients.csv')

@@ -1,10 +1,11 @@
 from pathlib import Path
 import pandas as pd
+from sqlalchemy.exc import IntegrityError
 
 from .Processor import ProcessData
 from ..Utils import DumpDataFrameToSQL
 
-def MainDumpRecipes():
+def MainDumpRecipes(MainLogger):
     DatasetRecipes = Path('./Datasets/SQL/Recipes.csv')
     
     if not DatasetRecipes.exists():
@@ -12,5 +13,7 @@ def MainDumpRecipes():
     else:
         RecipesDataFrame = pd.read_csv(DatasetRecipes)
     
-    NumRows = DumpDataFrameToSQL(RecipesDataFrame,'RECIPES')
-    return NumRows
+    try:
+        DumpDataFrameToSQL(RecipesDataFrame,'RECIPES')
+    except IntegrityError:
+        MainLogger.info('Recipes Data Preloaded')
