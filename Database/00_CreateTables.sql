@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS "INGREDIENTS_NUTRIENTS" (
 	"ingredient_id" UUID NOT NULL,
 	"nutrient_id" UUID NOT NULL,
 	"Amount" REAL NOT NULL,
+	PRIMARY KEY ("ingredient_id","nutrient_id"),
 	CONSTRAINT foreign_ingredients FOREIGN KEY("ingredient_id") REFERENCES "INGREDIENTS"("id"),
 	CONSTRAINT foreign_nutrients FOREIGN KEY("nutrient_id") REFERENCES "NUTRIENTS"("id")
 );

@@ -67,3 +67,36 @@ def MainDumpIngredients(MainLogger):
                 DumpDataFrameToSQL(batch_data[IngredientsTableColumns],'INGREDIENTS')
             except IntegrityError:
                 MainLogger.info(f'Ingredients Embeddings {index} Data Preloaded')
+
+def MainDumpIngredients_Nutrients(MainLogger):
+    DatasetIngredients = Path('./Datasets/SQL/Ingredients.csv')
+    DatasetNutrients = Path('./Datasets/SQL/Nutrients.csv')
+    DatasetIngredientsNutrients = Path('./Datasets/SQL/Ingredients_Nutrients.csv')
+
+    DataFrameIngredientsNutrients = pd.read_csv(DatasetIngredients)
+    DataFrameNutrients = pd.read_csv(DatasetNutrients).set_index('Name')
+
+    if not DatasetIngredientsNutrients.exists():
+        DataFrameIngredientsNutrients_List = []
+        for nutrient in DataFrameNutrients.index:
+            dataframe_ingredients_nutrients = pd.DataFrame()
+            dataframe_ingredients_nutrients['ingredient_id'] = DataFrameIngredientsNutrients['id']
+            dataframe_ingredients_nutrients['nutrient_id'] = DataFrameNutrients.loc[nutrient,'id']
+            dataframe_ingredients_nutrients['Amount'] = DataFrameIngredientsNutrients[nutrient]
+
+            try:
+                DumpDataFrameToSQL(dataframe_ingredients_nutrients,'INGREDIENTS_NUTRIENTS')
+            except IntegrityError:
+                MainLogger.info(f'Ingredients_Nutrients Relations {index} Data Preloaded')
+
+            DataFrameIngredientsNutrients_List.append(dataframe_ingredients_nutrients)
+        
+        DataFrameIngredientsNutrients = pd.concat(DataFrameIngredientsNutrients_List,ignore_index=True)
+        DataFrameIngredientsNutrients.to_csv(DatasetIngredientsNutrients,index=False)
+
+    else:
+        DataFrameIngredientsNutrients = pd.read_csv(DatasetIngredientsNutrients)
+        try:
+            DumpDataFrameToSQL(DataFrameIngredientsNutrients,'INGREDIENTS_NUTRIENTS')
+        except IntegrityError:
+            MainLogger.info('Ingredients_Nutrients Relations Data Preloaded')
