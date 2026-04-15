@@ -15,8 +15,8 @@ GRANT reader_data TO authenticator;
 GRANT CONNECT ON DATABASE :"db_name" TO loader_data, reader_data, authenticator;
 GRANT USAGE ON SCHEMA :"schema_name" TO loader_data, reader_data, authenticator;
 
-GRANT INSERT , SELECT  ON ALL TABLES IN SCHEMA :"schema_name" TO loader_data;
-GRANT USAGE , SELECT ON ALL SEQUENCES IN SCHEMA :"schema_name" TO loader_data;
+GRANT INSERT , SELECT , UPDATE  ON ALL TABLES IN SCHEMA :"schema_name" TO loader_data;
+GRANT USAGE , SELECT , UPDATE ON ALL SEQUENCES IN SCHEMA :"schema_name" TO loader_data;
 GRANT SELECT ON ALL TABLES IN SCHEMA :"schema_name" TO reader_data;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA :"schema_name" 
