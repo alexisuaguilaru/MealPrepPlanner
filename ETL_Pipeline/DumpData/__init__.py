@@ -3,4 +3,4 @@ from .Ingredients import MainDumpIngredients , MainDumpIngredients_Nutrients
 from .Recipes_Ingredients import MainDumpRecipes_Ingredients
 from .Ingredients_Prices import MainDumpIngredients_Prices
 from .Nutrients import MainDumpNutrients
-from .Recipes_Complement import MainDumpRecipesPrices
+from .Recipes_Complement import MainDumpRecipesPrices , MainDumpRecipesNutrients
