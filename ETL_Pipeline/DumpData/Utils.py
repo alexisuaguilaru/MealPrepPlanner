@@ -16,7 +16,6 @@ def DumpDataFrameToSQL(DataFrame,TableSQL):
     )
     return NumRows
 
-# env var 'HF_TOKEN'
 def InitSemanticModel():
     SemanticModel = SentenceTransformer(
         'microsoft/harrier-oss-v1-270m',

@@ -62,25 +62,25 @@ def MainLoad(MainLogger: logging.Logger):
     MainLogger.info('Start Loading & Dumping Data')
 
     MainLogger.info('Start Dump of Nutrient Data')
-    # MainDumpNutrients(MainLogger)
+    MainDumpNutrients(MainLogger)
 
     MainLogger.info('Start Dump of Ingredients Prices Data')
-    # MainDumpIngredients_Prices(MainLogger)
+    MainDumpIngredients_Prices(MainLogger)
 
     MainLogger.info('Start Dump of Ingredients Data')
-    # MainDumpIngredients(MainLogger)
+    MainDumpIngredients(MainLogger)
 
     MainLogger.info('Start Dump of Ingredients_Nutrients Data')
-    # MainDumpIngredients_Nutrients(MainLogger)
+    MainDumpIngredients_Nutrients(MainLogger)
 
     MainLogger.info('Start Dump of Recipes Data')
-    # MainDumpRecipes(MainLogger)
+    MainDumpRecipes(MainLogger)
 
     MainLogger.info('Start Dump of Recipes_Ingredients Data')
-    # MainDumpRecipes_Ingredients(MainLogger)
+    MainDumpRecipes_Ingredients(MainLogger)
 
     MainLogger.info('Start Dump of Recipes Prices')
-    # MainDumpRecipesPrices(MainLogger)
+    MainDumpRecipesPrices(MainLogger)
 
     MainLogger.info('Start Dump of Recipes_Nutrients and MRecipes Macronutrients')
     MainDumpRecipesNutrients(MainLogger)

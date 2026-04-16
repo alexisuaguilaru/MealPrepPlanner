@@ -174,7 +174,6 @@ def _ProcessSNIIIM_Pes(DatasetPrices_Pes):
     DatasetPrices_Pes.columns = DatasetPrices_Pes.iloc[0]
     DatasetPrices_Pes.drop([0,1],inplace=True)
 
-    ## Cleand dataset
     DataFramePrices_Pes = DatasetPrices_Pes[['Producto','Pmáx']]
     DataFramePrices_Pes['Pmáx'] = DataFramePrices_Pes['Pmáx'].replace(regex=r'-+',value=np.nan)
     DataFramePrices_Pes['Pmáx'].dropna(inplace=True)

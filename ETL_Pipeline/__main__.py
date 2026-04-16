@@ -17,7 +17,7 @@ logging.basicConfig(level = logging.INFO)
 if __name__ == '__main__':
     _logger.info('No issues with imports')
     
-    # MainExtraction(_logger)
+    MainExtraction(_logger)
 
     MainLoad(_logger)
 
