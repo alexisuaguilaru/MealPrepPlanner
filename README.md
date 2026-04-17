@@ -6,7 +6,9 @@
 - [Value Proposition](#value-proposition)
 - [Objective](#objective)
 - [Key Features](#key-features)
-- [ETL Pipelines](#etl-pipelines)
+- [ETL Pipeline](#etl-pipeline)
+  - [Usage](#usage)
+  - [Datasets](#datasets)
 - [Author, Affiliation and Contact](#author-affiliation-and-contact)
 - [Referencias](#referencias)
 
@@ -41,7 +43,36 @@ Develop a **digital repository of nutritionally balanced recipes that streamline
 * **Automate Supply Chain Management**: Integrate a logistics module for the automated generation of ingredient lists and inventory requirements based on planned menu cycles.
 * **Establish Foundation for Autonomous Agents**: Integrate technical documentation and embeddings to facilitate future development of a RAG-based autonomous assistant for intelligent menu generation.
 
-## [ETL Pipelines](./ETL_Pipeline/DOCS.md)
+## ETL Pipeline
+For a **detailed technical overview** of the recipe, ingredient and technical documents **data ingestion flows**, please refer to the [ETL Pipeline](./ETL_Pipeline/README.md) documentation.
+
+### Usage
+Follow these steps to properly use the pipeline:
+1. **Configure Credentials**: Create a *Kiwilimón account*. Copy the example credential file and update it with your *username* and *password*:
+```bash
+cp ./ETL_Pipeline/CREDENTIAL_EXAMPLE.json ./ETL_Pipeline/CREDENTIAL.json
+```
+2. **Install Dependencies**: It is recommended to use a Python virtual environment. Install the required libraries with:
+```bash
+pip install -r ./ETL_Pipeline/requirements.txt
+```
+3. **Environment Variables**: For production or custom deployments, configure your environment variables by copying the example file:
+```bash
+cp .env.example .env
+```
+4. **Start Services**: Launch the Docker services for the database:
+```bash
+docker compose up -d
+```
+5. **Run the Pipeline**: Execute the ETL process with the following command:
+```bash
+python -m ETL_Pipeline
+```
+
+*Note: Ensure the environment variables are exported to your system so the ETL script can access them during execution.*
+
+### Datasets
+Upon successful execution of the pipeline, all **processed data** (available in CSV, JSON, PDF, and Markdown formats) is **organized and stored** in the [Datasets](./Datasets/) folder. Additionally, this directory includes **specific CSV files** designed for **database reconstruction**, facilitating seamless migrations to other systems or a complete database reset if required.
 
 ## Author, Affiliation and Contact
 Alexis Aguilar [Student of Bachelor's Degree in "Tecnologías para la Información en Ciencias" at Universidad Nacional Autónoma de México [UNAM](https://www.unam.mx/)]: alexis.uaguilaru@gmail.com
