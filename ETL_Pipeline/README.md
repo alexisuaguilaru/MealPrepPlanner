@@ -7,10 +7,11 @@
   - [Nutritional and Cost Imputation](#nutritional-and-cost-imputation)
   - [Entity Resolution](#entity-resolution)
   - [Persistence and Storage](#persistence-and-storage)
-- [Documents Database](#documents-database)
+- [\[Proposal Not Fully Implemented\] Documents Database](#proposal-not-fully-implemented-documents-database)
   - [Data Acquisition](#data-acquisition)
   - [Embedding Representation](#embedding-representation)
   - [Persistence and Vector Storage](#persistence-and-vector-storage)
+- [Database Challenges and Known Limitations](#database-challenges-and-known-limitations)
 - [References](#references)
 
 ## Data Architecture
@@ -41,13 +42,13 @@ To address missing nutritional metadata and provide accurate economic projection
 Given that these sources are provided as **open-access data** from recognized institutions, the acquisition process primarily involves the **direct download and technical processing of tabular datasets**. These files are subsequently **normalized and mapped** to the repository's internal **metadata standards** to ensure seamless integration.
 
 ### Entity Resolution
-Before database persistence, the system executes an **entity resolution phase**. This ensures that ingredient descriptors from recipes **perfectly align** with those in the nutritional and cost catalogs. We employ **Small Language Models (SLMs)** and **string-matching algorithms** to evaluate **semantic similarity**, ensuring **consistent logical linking** across the repository.
+Before database persistence, the system executes an **entity resolution phase**. This ensures that ingredient descriptors from recipes **perfectly align** with those in the nutritional and cost catalogs. We employ **[Microsoft Harrier OSS V1 270M](https://huggingface.co/microsoft/harrier-oss-v1-270m)** (embedding model) and **string-matching algorithms** to evaluate **semantic similarity**, ensuring **consistent logical linking** across the repository.
 
 ### Persistence and Storage
 The **refined data is hosted on Supabase** (Supabase, 2026), following a relational model designed for high referential integrity:
 ![](../Resources/DiagramDatabaseIngredients.png)
 
-## Documents Database
+## [Proposal Not Fully Implemented] Documents Database
 To provide the system with deep **semantic awareness** regarding nutritional principles and food safety, we are developing a **Retrieval-Augmented Generation (RAG) framework** (Gao et al., 2023). This architecture allows a **future ChatBot** to move beyond standard language patterns by grounding its **responses** in a **specialized, high-authority knowledge base**.
 
 ### Data Acquisition
@@ -62,6 +63,13 @@ To maintain **coherence** within the latent space, the system utilizes **state-o
 
 ### Persistence and Vector Storage
 The resulting high-dimensional vectors are stored in the **Supabase Vector engine** (Supabase, 2026), organized for **efficient similarity searches**. The embeddings are **stored alongside descriptive metadata** (titles, publication dates, and keywords) to ensure full **traceability** of the information source.
+
+## Database Challenges and Known Limitations
+The ETL process revealed several **technical challenges** regarding **data integrity** and **semantic consistency**. Below are the primary issues present in the current database version:
+* **Entity Resolution and Data Sparsity**: Low data density in ingredient and cost catalogs hinders the effectiveness of semantic mapping. Lexical and bilingual variations make it difficult for the system to retrieve accurate real-world matches, which can affect relational precision.
+* **Dimensional Inconsistency**: A fundamental mismatch exists when recipes are linked to prices. While the $1\text{g} = 1\text{ml}$ heuristic is used as a technical workaround, it relies on semantic assumptions rather than physical reality. Consequently, some nutritional and cost outputs are algorithmic "guesses" rather than grounded estimates.
+* **Low Similarity Threshold**: To ensure connectivity, a reduced similarity threshold ($0.25$) was implemented. This forces logical links but introduces a risk of inconsistency. Therefore, calculations in data-poor sectors of the database should be interpreted as conjectures derived from limited input representation.
+* **Data Preservation Strategy** To mitigate these issues, the relational model uses redundant fields to safeguard original information. Inferred values for nutrients and costs are stored separately, ensuring that the primary "Source of Truth" remains unpolluted by algorithmic imputations or assumptions.
 
 ## References
 * PostgreSQL Development Team. (2026). PostgreSQL: The World’s Most Advanced Open Source Relational Database. https://www.postgresql.org
