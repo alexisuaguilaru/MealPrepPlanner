@@ -6,7 +6,7 @@ ColumnsRecipes = ['id','Name','Calories','Carbohydrates','Proteins','Fats','Imag
 ColumnsIngredients = 'RECIPES_INGREDIENTS(StringAmount,IngredientName,UnitMeasurement,ingredient_id)'
 def GetRecipesRecommendations(
         PrevRecipesID: list[UUID] = [],
-    ):
+    ) -> list[dict]:
     
     BaseSelectRecommendations = (
     ConnectionToAPI
@@ -20,19 +20,20 @@ def GetRecipesRecommendations(
     )
 
     if not PrevRecipesID: 
-        return (
+        Recommendations =  (
         BaseSelectRecommendations
             .execute()
         ).data
     
     else:
         FilteredRecipesID = _GetFilteredRecipes(PrevRecipesID)
-
-        return (
+        Recommendations = (
         BaseSelectRecommendations
             .in_('id',FilteredRecipesID)
             .execute()
         ).data
+
+    return _ClearRecommendations(Recommendations)
     
 def _GetFilteredRecipes(
         PrevRecipesID: list[UUID],
@@ -61,3 +62,21 @@ def _GetFilteredRecipes(
     ).data
 
     return {recipe['recipe_id'] for recipe in FilteredRecipesID}
+
+def _ClearRecommendations(
+        Recommendations: list[dict]
+    ):
+
+    FilteredRecommendations = filter(lambda recipe: 1 < len(recipe['RECIPES_INGREDIENTS']),Recommendations)
+
+    return sorted(
+        FilteredRecommendations,
+        key = _RecipeValue,
+        reverse = True,
+    )
+
+def _RecipeValue(
+        Recipe: dict
+    ):
+
+    return (Recipe['Carbohydrates']+Recipe['Proteins']+Recipe['Fats'])/Recipe['PricePerServing']

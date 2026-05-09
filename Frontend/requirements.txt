@@ -3,3 +3,4 @@
 requests == 2.33.1
 pydantic == 2.12.5
 streamlit == 1.57.0
+postgrest == 2.28.3
