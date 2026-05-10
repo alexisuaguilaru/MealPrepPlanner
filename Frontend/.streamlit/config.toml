@@ -1,8 +1,2 @@
 [server]
-runOnSave = true
 enableStaticServing = true
-
-[theme.sidebar]
-backgroundColor = "#003D79"
-borderColor = "#D59F0F"
-baseRadius = "full"

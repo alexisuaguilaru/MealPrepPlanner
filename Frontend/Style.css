@@ -25,3 +25,18 @@
     width: 90vw;
     z-index: 9999;
 }
+
+.stTabs [aria-selected="true"] {
+    background-color: #ffffff;
+    color: #2391ff;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    color: #000000;
+}
+
+.stTabs [data-baseweb="tab-highlight"] {
+    display: none;
+}

@@ -24,10 +24,16 @@ def Main():
         page_icon = '/app/static/Icon.png',
         layout = 'wide',
     )
-    st.title('Planificador de Menús Semanales',text_alignment='center')
+    st.title(":color[Planificador de Menús Semanales]{foreground='#2391ff'}",text_alignment='center')
 
     Login()
 
-    DashboardContainer()
-    st.divider()
-    RecipesSelectors()
+    MenuCreation , GroceryList  = st.tabs(['**Creación del Menú**','**Lista de Compras**'])
+
+    with MenuCreation:
+        DashboardContainer()
+        st.divider()
+        RecipesSelectors()
+
+    with GroceryList:
+        pass
