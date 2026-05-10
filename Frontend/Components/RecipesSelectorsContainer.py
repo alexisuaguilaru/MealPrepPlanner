@@ -1,5 +1,7 @@
 import streamlit as st
 
+from Utils import GetRecipesRecommendations
+
 DaysLabels = ['Lunes','Martes','Miércoles','Jueves','Viernes']
 MealsLabels = ['Desayuno','Almuerzo','Comida']
 def RecipesSelectors():
@@ -27,10 +29,14 @@ def RecipesSelectors():
 
                     with _AddContentBlock(False):
                         if not recipe:
-                            _AddRecipeSelector(recipe_key)
+                            if _AddRecipeSelector(recipe_key):
+                                _RecipeSelectorDialog(recipe_key)
 
-def _AddContentBlock(Border=True):
-    return st.container(border=Border,height=85,vertical_alignment='center',horizontal_alignment='center')
+def _AddContentBlock(
+        Border = True,
+        Height = 85,
+    ):
+    return st.container(border=Border,height=Height,vertical_alignment='center',horizontal_alignment='center')
 
 def _AddRecipeSelector(RecipeKey):
     return st.button(
@@ -38,3 +44,50 @@ def _AddRecipeSelector(RecipeKey):
             key = f'select_{RecipeKey}',
             use_container_width = True,
         )
+
+@st.dialog('Seleccione una receta',width='large')
+def _RecipeSelectorDialog(DayMealKey):
+    PrevRecipesID = st.session_state.get('SelectedRecipes',{}).values()
+    Recommendations = GetRecipesRecommendations(PrevRecipesID)
+
+    GridRecipes = st.columns(3)
+    for index , recipe in enumerate(Recommendations[:30]):
+        with GridRecipes[index%3]:
+            with _AddContentBlock(Height=650):
+                _AddRecipeCard(DayMealKey,recipe)
+
+NutrientLabels = ['Calories','Carbohydrates','Proteins','Fats']
+NutrientNames = ['calorías','carbohidratos','proteínas','grasas']
+def _AddRecipeCard(DayMealKey,Recipe):
+    if st.button(
+        Recipe['Name'],
+        key = f"{DayMealKey}_{Recipe['id']}",
+        use_container_width = True
+    ):
+        st.session_state['SelectedRecipes'][DayMealKey] = Recipe['id']
+    st.image(Recipe['Image'],width=240)
+
+    st.divider()
+
+    NutrientsColumns = st.columns(2)
+    for index , (nutrient , name) in enumerate(zip(NutrientLabels,NutrientNames)):
+        with NutrientsColumns[index%2]:
+            st.markdown(f'{Recipe[nutrient]} {name}',text_alignment='center')
+
+    with NutrientsColumns[0]:
+        with st.popover('Instrucciones'):
+            st.markdown(Recipe['Instructions'])
+
+    with NutrientsColumns[1]:
+        with st.popover('Ingredientes'):
+            for ingredient in Recipe['RECIPES_INGREDIENTS']:
+                amount = ingredient['StringAmount'] or ''
+                unit = ingredient['UnitMeasurement'] or ''
+                name = ingredient['IngredientName'] or ''
+                ingredient_info = ' '.join([amount,unit,name])
+                st.markdown(ingredient_info)
+        
+    st.divider()
+
+    with st.container(horizontal_alignment='center',vertical_alignment='center'):
+        st.markdown(f"{Recipe['Servings']} porciones con costo de ${Recipe['PricePerServing']:.2f} por porción",text_alignment='center')
