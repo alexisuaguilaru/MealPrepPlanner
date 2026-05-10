@@ -58,7 +58,7 @@ def _AddMinimalRecipe(RecipeKey):
 
 @st.dialog('Seleccione una receta',width='large')
 def _RecipeSelectorDialog(DayMealKey):
-    PrevRecipesID = [recipe['id'] for recipe in st.session_state['SelectedRecipes']]
+    PrevRecipesID = [recipe['id'] for recipe in st.session_state['SelectedRecipes'].values()]
     Recommendations = GetRecipesRecommendations(PrevRecipesID)
 
     GridRecipes = st.columns(3)

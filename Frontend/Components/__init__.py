@@ -1,1 +1,2 @@
 from .RecipesSelectorsContainer import RecipesSelectors
+from .NutrientsDashboard import DashboardContainer
