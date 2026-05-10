@@ -1,10 +1,12 @@
+from itertools import product
 import streamlit as st
 
 from Utils import LoadStyle
 from Components import RecipesSelectors
 
 def Login():
-    st.session_state['SelectedRecipes'] = {}
+    if 'SelectedRecipes' not in st.session_state:
+        st.session_state['SelectedRecipes'] = {}
 
 def Main():
     LoadStyle()

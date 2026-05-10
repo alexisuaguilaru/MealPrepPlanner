@@ -31,6 +31,9 @@ def RecipesSelectors():
                         if not recipe:
                             if _AddRecipeSelector(recipe_key):
                                 _RecipeSelectorDialog(recipe_key)
+                        else:
+                            if _AddMinimalRecipe(recipe_key):
+                                _ModificationSelectedRecipe(recipe_key)
 
 def _AddContentBlock(
         Border = True,
@@ -45,9 +48,17 @@ def _AddRecipeSelector(RecipeKey):
             use_container_width = True,
         )
 
+def _AddMinimalRecipe(RecipeKey):
+    Recipe = st.session_state['SelectedRecipes'][RecipeKey]
+    return st.button(
+            _FormatRecipeName(Recipe['Name']),
+            key = f'info_{RecipeKey}',
+            use_container_width = True,
+        )
+
 @st.dialog('Seleccione una receta',width='large')
 def _RecipeSelectorDialog(DayMealKey):
-    PrevRecipesID = st.session_state.get('SelectedRecipes',{}).values()
+    PrevRecipesID = [recipe['id'] for recipe in st.session_state['SelectedRecipes']]
     Recommendations = GetRecipesRecommendations(PrevRecipesID)
 
     GridRecipes = st.columns(3)
@@ -55,6 +66,19 @@ def _RecipeSelectorDialog(DayMealKey):
         with GridRecipes[index%3]:
             with _AddContentBlock(Height=650):
                 _AddRecipeCard(DayMealKey,recipe)
+
+@st.dialog('Modificar receta seleccionada',width='small')
+def _ModificationSelectedRecipe(DayMealKey):
+    Recipe = st.session_state['SelectedRecipes'][DayMealKey]
+    with _AddContentBlock(False,Height=360):
+        st.markdown(f"**{Recipe['Name']}**",text_alignment='center')
+        st.image(Recipe['Image'],width=240)
+        if st.button(
+                'Eliminar receta',
+                use_container_width = True,
+            ):
+            del st.session_state['SelectedRecipes'][DayMealKey]
+            st.rerun()            
 
 NutrientLabels = ['Calories','Carbohydrates','Proteins','Fats']
 NutrientNames = ['calorías','carbohidratos','proteínas','grasas']
@@ -64,7 +88,9 @@ def _AddRecipeCard(DayMealKey,Recipe):
         key = f"{DayMealKey}_{Recipe['id']}",
         use_container_width = True
     ):
-        st.session_state['SelectedRecipes'][DayMealKey] = Recipe['id']
+        st.session_state['SelectedRecipes'][DayMealKey] = Recipe
+        st.rerun()
+
     st.image(Recipe['Image'],width=240)
 
     st.divider()
@@ -76,18 +102,28 @@ def _AddRecipeCard(DayMealKey,Recipe):
 
     with NutrientsColumns[0]:
         with st.popover('Instrucciones'):
+            st.markdown('**Instrucciones**',text_alignment='center')
             st.markdown(Recipe['Instructions'])
 
     with NutrientsColumns[1]:
         with st.popover('Ingredientes'):
+            st.markdown('**Ingredientes**',text_alignment='center')
             for ingredient in Recipe['RECIPES_INGREDIENTS']:
                 amount = ingredient['StringAmount'] or ''
                 unit = ingredient['UnitMeasurement'] or ''
                 name = ingredient['IngredientName'] or ''
                 ingredient_info = ' '.join([amount,unit,name])
-                st.markdown(ingredient_info)
+                st.markdown('* '+ingredient_info)
         
     st.divider()
 
     with st.container(horizontal_alignment='center',vertical_alignment='center'):
         st.markdown(f"{Recipe['Servings']} porciones con costo de ${Recipe['PricePerServing']:.2f} por porción",text_alignment='center')
+
+def _FormatRecipeName(
+        RecipeName,
+        Limit = 20,
+    ):
+    if Limit < len(RecipeName):
+        RecipeName = RecipeName[:Limit]+'...'
+    return f'**:small[{RecipeName}]**'
