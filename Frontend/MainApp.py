@@ -29,4 +29,5 @@ def Main():
     Login()
 
     DashboardContainer()
+    st.divider()
     RecipesSelectors()

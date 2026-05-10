@@ -35,6 +35,19 @@ def DashboardContainer():
                     f"Max: {st.session_state['MaxNutrientsValues'][nutrient]} {unit}",
                     text_alignment = 'center'
                 )
+
+        with DashboardColumns[-1]:
+            with st.container(vertical_alignment='center',horizontal_alignment='center'):
+                st.markdown('\n')
+                st.markdown(
+                    '**PRECIO PROMEDIO POR RECETA**:',
+                    text_alignment = 'center',
+                )
+                st.markdown(
+                    f"**${GeneralInformation['Price']:.2f}**",
+                    text_alignment = 'center',
+                )
+
     st.markdown(':gray[Valores sustentados en una dieta cuyas comidas aportan 400 calorías en promedio.]')
 
 def _ExtractInformationToDict(GeneralInformation):
@@ -43,4 +56,5 @@ def _ExtractInformationToDict(GeneralInformation):
         'Carbohidratos': GeneralInformation.Carbohydrates,
         'Proteínas': GeneralInformation.Proteins,
         'Grasas': GeneralInformation.Fats,
+        'Price': GeneralInformation.PricePerServing,
     }
