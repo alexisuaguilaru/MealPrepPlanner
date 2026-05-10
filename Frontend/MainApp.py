@@ -1,17 +1,21 @@
-
 import streamlit as st
 
-from Config import FrontendSettings
-# from Utils import 
-# from Components import 
+from Utils import LoadStyle
+from Components import RecipesSelectors
 
 def Login():
     st.session_state
 
 def Main():
+    LoadStyle()
+
     st.set_page_config(
         page_title = 'Meal Prep Planner',
         page_icon = '/app/static/Icon.png',
+        layout = 'wide',
     )
+    st.title('Planificador de Menús Semanales',text_alignment='center')
 
     Login()
+
+    RecipesSelectors()
