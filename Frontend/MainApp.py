@@ -2,7 +2,7 @@ from math import ceil
 import streamlit as st
 
 from Utils import LoadStyle
-from Components import DashboardContainer , RecipesSelectors , GroceryListContainer
+from Components import DashboardContainer , RecipesSelectors , GroceryListContainer , Footer
 
 def Login():
     if 'SelectedRecipes' not in st.session_state:
@@ -36,3 +36,5 @@ def Main():
 
     with GroceryList:
         GroceryListContainer()
+
+    Footer()
