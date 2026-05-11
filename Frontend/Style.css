@@ -16,16 +16,6 @@
     padding: 0;
 }
 
-[data-baseweb="popover"] {
-    position: fixed;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 500px;
-    width: 90vw;
-    z-index: 9999;
-}
-
 .stTabs [aria-selected="true"] {
     background-color: #ffffff;
     color: #2391ff;

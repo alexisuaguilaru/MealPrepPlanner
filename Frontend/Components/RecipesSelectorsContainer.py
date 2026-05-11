@@ -56,14 +56,14 @@ def _AddMinimalRecipe(RecipeKey):
             use_container_width = True,
         )
 
-@st.dialog('Seleccione una receta',width='large')
+@st.dialog('Seleccione una receta',width='medium')
 def _RecipeSelectorDialog(DayMealKey):
     PrevRecipesID = [recipe['id'] for recipe in st.session_state['SelectedRecipes'].values()]
     Recommendations = GetRecipesRecommendations(PrevRecipesID)
 
-    GridRecipes = st.columns(3)
+    GridRecipes = st.columns(2)
     for index , recipe in enumerate(Recommendations[:30]):
-        with GridRecipes[index%3]:
+        with GridRecipes[index%2]:
             with _AddContentBlock(Height=650):
                 _AddRecipeCard(DayMealKey,recipe)
 
@@ -101,19 +101,21 @@ def _AddRecipeCard(DayMealKey,Recipe):
             st.markdown(f'{Recipe[nutrient]} {name}',text_alignment='center')
 
     with NutrientsColumns[0]:
-        with st.popover('Instrucciones'):
-            st.markdown('**Instrucciones**',text_alignment='center')
-            st.markdown(Recipe['Instructions'])
+        with st.container(horizontal_alignment='center'):
+            with st.popover('Instrucciones'):
+                st.markdown('**Instrucciones**',text_alignment='center')
+                st.markdown(Recipe['Instructions'])
 
     with NutrientsColumns[1]:
-        with st.popover('Ingredientes'):
-            st.markdown('**Ingredientes**',text_alignment='center')
-            for ingredient in Recipe['RECIPES_INGREDIENTS']:
-                amount = ingredient['StringAmount'] or ''
-                unit = ingredient['UnitMeasurement'] or ''
-                name = ingredient['IngredientName'] or ''
-                ingredient_info = ' '.join([amount,unit,name])
-                st.markdown('* '+ingredient_info)
+        with st.container(horizontal_alignment='center'):
+            with st.popover('Ingredientes'):
+                st.markdown('**Ingredientes**',text_alignment='center')
+                for ingredient in Recipe['RECIPES_INGREDIENTS']:
+                    amount = ingredient['StringAmount'] or ''
+                    unit = ingredient['UnitMeasurement'] or ''
+                    name = ingredient['IngredientName'] or ''
+                    ingredient_info = ' '.join([amount,unit,name])
+                    st.markdown('* '+ingredient_info)
         
     st.divider()
 

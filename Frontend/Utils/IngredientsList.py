@@ -21,7 +21,10 @@ def GetIngredientsInformation(
         .execute()
     ).data
 
-    return pd.DataFrame(map(_CleanIngredientInformation,IngredientesPricesInformation))
+    return pd.DataFrame(
+        map(_CleanIngredientInformation,IngredientesPricesInformation),
+        columns = ['ingredient_id','Name','Amount','Unit','TotalPrice','Servings']
+    )
 
 def _CleanIngredientInformation(
         Ingredient: dict,
