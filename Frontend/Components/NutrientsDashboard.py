@@ -26,13 +26,13 @@ def DashboardContainer():
                     text_alignment = 'center',
                     unsafe_allow_html = True,
                 )
-                unit = 'grs' if nutrient != 'Calorías' else 'cals'
+                unit = 'grs' if nutrient != 'Calorías' else 'kcals'
                 st.markdown(
-                    f":color[**{nutrient}** ({unit})]{{foreground={color}}}",
+                    f"##### :color[**{nutrient}** ({unit})]{{foreground={color}}}",
                     text_alignment = 'center'
                 )
                 st.markdown(
-                    f"Max: {st.session_state['MaxNutrientsValues'][nutrient]} {unit}",
+                    f"##### Max: {st.session_state['MaxNutrientsValues'][nutrient]} {unit}",
                     text_alignment = 'center'
                 )
 
@@ -40,11 +40,11 @@ def DashboardContainer():
             with st.container(vertical_alignment='center',horizontal_alignment='center'):
                 st.markdown('\n')
                 st.markdown(
-                    '**PRECIO PROMEDIO POR RECETA**:',
+                    '##### **PRECIO PROMEDIO POR RECETA**:',
                     text_alignment = 'center',
                 )
                 st.markdown(
-                    f"**${GeneralInformation['Price']:.2f}**",
+                    f"##### **${GeneralInformation['Price']:.2f}**",
                     text_alignment = 'center',
                 )
 

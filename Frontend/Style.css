@@ -16,11 +16,15 @@
     padding: 0;
 }
 
+.stTabs [data-baseweb="tab"] > div[data-testid="stMarkdownContainer"] > p{
+    font-size: 22px !important;
+    font-weight: 500;
+}
+
 .stTabs [aria-selected="true"] {
     background-color: #ffffff;
     color: #2391ff;
     font-weight: bold;
-    font-size: 18px;
 }
 
 .stTabs [data-baseweb="tab"]:hover {

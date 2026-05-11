@@ -32,7 +32,6 @@ def Main():
 
     with MenuCreation:
         DashboardContainer()
-        st.divider()
         RecipesSelectors()
 
     with GroceryList:
