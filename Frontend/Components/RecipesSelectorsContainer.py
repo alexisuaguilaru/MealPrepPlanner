@@ -15,13 +15,19 @@ def RecipesSelectors():
 
             for meal in MealsLabels:
                 with _AddContentBlock():
-                    st.markdown(f'**:green[{meal}]**',text_alignment='center')
+                    st.markdown(
+                        f"**:color[{meal}]{{foreground='#2391ff'}}**",
+                        text_alignment = 'center'
+                    )
 
     for day , day_column in zip(DaysLabels,DaysColumns[1:]):
         with day_column:
             with st.container():
                 with _AddContentBlock():
-                    st.markdown(f'**:green[{day}]**',text_alignment='center')
+                    st.markdown(
+                        f"**:color[{day}]{{foreground='#2391ff'}}**",
+                        text_alignment = 'center'
+                    )
 
                 for meal in MealsLabels:
                     recipe_key = f'{day}_{meal}'
@@ -37,13 +43,13 @@ def RecipesSelectors():
 
 def _AddContentBlock(
         Border = True,
-        Height = 85,
+        Height = 60,
     ):
     return st.container(border=Border,height=Height,vertical_alignment='center',horizontal_alignment='center')
 
 def _AddRecipeSelector(RecipeKey):
     return st.button(
-            ':small[Seleccionar una receta]', 
+            ':small[:gray[Seleccionar una receta]]', 
             key = f'select_{RecipeKey}',
             use_container_width = True,
         )

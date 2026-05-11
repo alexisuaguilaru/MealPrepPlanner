@@ -36,7 +36,7 @@ def GroceryListContainer():
                 amount_unit = ' '.join([str(amount),unit])
                 st.markdown(amount_unit)
             with TotalPrice:
-                st.markdown(f"${ingredient['TotalPrice']:.2f}")
+                st.markdown(f"${ingredient['TotalPrice']:.2f} MXN")
 
     with Selectors:
         with st.container(vertical_alignment='center',horizontal_alignment='center'):
@@ -52,7 +52,7 @@ def GroceryListContainer():
                 f"""
                 **Costo por total de porciones:**
 
-                **${Total:.2f}**
+                **${Total:.2f} MXN**
                 """,
                 text_alignment = 'center'
             )

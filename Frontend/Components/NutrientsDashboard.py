@@ -44,7 +44,7 @@ def DashboardContainer():
                     text_alignment = 'center',
                 )
                 st.markdown(
-                    f"##### **${GeneralInformation['Price']:.2f}**",
+                    f"##### **${GeneralInformation['Price']:.2f} MXN**",
                     text_alignment = 'center',
                 )
 
