@@ -37,7 +37,7 @@ def _CleanIngredientInformation(
         'ingredient_id': Ingredient['ingredient_id'],
         'Name': Ingredient['INGREDIENTS']['Name'],
         'Amount': Amount,
-        'UnitMeasurement': IngredientUnit,
+        'Unit': IngredientUnit,
         'TotalPrice': TotalPrice,
         'Servings': Ingredient['RECIPES']['Servings'],
     }
