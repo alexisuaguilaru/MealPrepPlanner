@@ -9,9 +9,10 @@
 - [ETL Pipeline](#etl-pipeline)
   - [Usage](#usage)
   - [Datasets](#datasets)
-  - [Dashboard](#dashboard)
+  - [Frontend and Dashboard](#frontend-and-dashboard)
+- [Future Roadmap \& Expansion](#future-roadmap--expansion)
 - [Author, Affiliation and Contact](#author-affiliation-and-contact)
-- [Referencias](#referencias)
+- [References](#references)
 
 ## Context and Problem
 Between 2020 and 2024, the combined prevalence of **overweight and obesity in Mexico** reached **36.6% in school-age children** and **40.1% in adolescents**. These figures indicate a significant **deterioration in the health and nutritional** status of minors, driven largely by the recurrent consumption of ultra-processed products and sugary drinks, particularly in urban environments (Gaona-Pineda et al., 2025). 
@@ -79,15 +80,21 @@ streamlit run Frontend
 ### Datasets
 Upon successful execution of the pipeline, all **processed data** (available in CSV, JSON, PDF, and Markdown formats) is **organized and stored** in the [Datasets](./Datasets/) folder. Additionally, this directory includes **specific CSV files** designed for **database reconstruction**, facilitating seamless migrations to other systems or a complete database reset if required.
 
-### Dashboard
+### Frontend and Dashboard
 For a **detailed technical overview** of the **frontend and dashboard**, please refer to the [Frontend](./Frontend/README.md) documentation.
+
+## Future Roadmap & Expansion
+This project is designed for **continuous evolution**, with several key expansion axes to enhance systemic quality:
+* **Database Scaling**: Increasing the repository's volume and quality by integrating diverse international recipes and real-time data sources for market costs and nutritional metrics.
+* **End-to-End Automation**: Transitioning into a comprehensive service model to simplify planning through intelligent processes. This reduces operational overhead by automating supplier prospecting and recipe selection.
+* **Agentic AI Integration**: Implementing autonomous agents to manage the entire planning lifecycle-optimizing for nutritional requirements, remaining inventory, and automated procurement without human intervention.
 
 ## Author, Affiliation and Contact
 Alexis Aguilar [Student of Bachelor's Degree in "Tecnologías para la Información en Ciencias" at Universidad Nacional Autónoma de México [UNAM](https://www.unam.mx/)]: alexis.uaguilaru@gmail.com
 
 Project developed for the subject "Digital Repositories" taught in semestre 2026-2 and it is not affiliated to a political party.
 
-## Referencias
+## References
 * Gaona-Pineda, E. B., Arango-Angarita, A., Valenzuela-Bravo, D. G., Medina-Zacarías, M. C., Martinez-Tapia, B., Rodríguez-Ramírez, S., & Hernández-Carapia, N. (2025). Contribución energética de alimentos mínimamente procesados, ultraprocesados y factores sociodemográficos asociados. Salud Pública de México, 67 (6 (nov-dic)), 587-597. https://doi.org/10.21149/16998
 * Secretaría de Economía, Secretaría de Salud. (2020, 24 de enero). NOM-051-SCFI/SSA1-2010, Especificaciones generales de etiquetado para alimentos y bebidas no alcohólicas preenvasados. https://www.dof.gob.mx/normasOficiales/8150/seeco11_C/seeco11_C.html
 * Programas para el Bienestar. (2026, ene.). Guías LEEN 2026. https://laescuelaesnuestra.sep.gob.mx/
