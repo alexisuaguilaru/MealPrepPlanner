@@ -9,6 +9,7 @@
 - [ETL Pipeline](#etl-pipeline)
   - [Usage](#usage)
   - [Datasets](#datasets)
+  - [Dashboard](#dashboard)
 - [Author, Affiliation and Contact](#author-affiliation-and-contact)
 - [Referencias](#referencias)
 
@@ -68,11 +69,18 @@ docker compose up -d
 ```bash
 python -m ETL_Pipeline
 ```
+6. **Run the Frontend**: Execute the Streamlit script to show  the planner:
+```bash
+streamlit run Frontend
+```
 
 *Note: Ensure the environment variables are exported to your system so the ETL script can access them during execution.*
 
 ### Datasets
 Upon successful execution of the pipeline, all **processed data** (available in CSV, JSON, PDF, and Markdown formats) is **organized and stored** in the [Datasets](./Datasets/) folder. Additionally, this directory includes **specific CSV files** designed for **database reconstruction**, facilitating seamless migrations to other systems or a complete database reset if required.
+
+### Dashboard
+For a **detailed technical overview** of the **frontend and dashboard**, please refer to the [Frontend](./Frontend/README.md) documentation.
 
 ## Author, Affiliation and Contact
 Alexis Aguilar [Student of Bachelor's Degree in "Tecnologías para la Información en Ciencias" at Universidad Nacional Autónoma de México [UNAM](https://www.unam.mx/)]: alexis.uaguilaru@gmail.com
